@@ -25,6 +25,7 @@
 
 \documentclass[sigconf]{acmart}
 \usepackage{bm}
+\usepackage{array}
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
 \AtBeginDocument{%
@@ -155,7 +156,7 @@ SOFTWARE ENGINEERING (SBES 2020),
 %% page.
 \begin{teaserfigure}
   \includegraphics[width=\textwidth]{figuras/joint_embedding.pdf}
-  \caption{Illustration of \emph{joint embedding} technique for code retrieval. Two neural networks map a question and a code snippet into a common vector space. The distance between the vectors reflects the relevance of a code snippet to a question.}
+  \caption{TODO: FIX translation Illustration of \emph{joint embedding} technique for code retrieval. Two neural networks map a question and a code snippet into a common vector space. The distance between the vectors reflects the relevance of a code snippet to a question.}
   \Description{None}
   \label{fig:joint-embedding}
 \end{teaserfigure}
@@ -252,7 +253,7 @@ Given an sentence $\bm{x} = \{ \bm{x}(0), \bm{x}(1), . . ., \bm{x}(n - 1) \}$, s
     \item \textit{Maxpool}
 \end{itemize}
 
-A convolution operation uses a convolutional filter $\bm{F}  = [\bm{F}(0),· · ·, \bm{F}(m - 1)]$, such that $\bm{F} \in \mathbb{R}^{m X d}$. The operation applies the filter in $m$ words (window size) in order to produce a new vector. Suppose $\bm{x}(i, i + j)$ refer to a concatenation of the vectors $\bm{x}(i), \bm{x}(i + 1), . . ., \bm{x}(i + j)$. If we apply $\bm{F}$ to $\bm{x}(i, i + m - 1)$, then we can calculate a new vector $\bm{c}(i)$ by:
+A convolution operation uses a filter $\bm{F}  = [\bm{F}(0),· · ·, \bm{F}(m - 1)]$, such that $\bm{F} \in \mathbb{R}^{m X d}$. The operation applies the filter in $m$ words (window size) in order to produce a new vector. Suppose $\bm{x}(i, i + j)$ refer to a concatenation of the vectors $\bm{x}(i), \bm{x}(i + 1), . . ., \bm{x}(i + j)$. If we apply $\bm{F}$ to $\bm{x}(i, i + m - 1)$, then we can calculate a new vector $\bm{c}(i)$ by:
 
 \begin{equation}\label{eq:calc_convolution_ci}
     \bm{c}(i) = tanh \left[\left(\sum_{j=0}^{m - 1} \bm{x}(i + j)^{T}\bm{F}(j)\right) + b\right]
@@ -264,49 +265,128 @@ In the equation~\ref{eq:calc_convolution_ci}, $b$ is a \textit{bias} e $\bm{F}$ 
     \bm{c} = \{ \bm{c}(0), \bm{c}(1), . . ., \bm{c}(n - m) \} 
 \end{equation}
 
-The feature map (or activation map) contains the latent and most important features of a sentence. A convolutional network may contain thousands of convolutional filters, each one extracting specific \emph{m-gram} features. A filter of $m$ size 2 extracts bigram features, size 3 extracts trigram features and so on. Após a operação de convolução, i.e., o cálculo de $\bm{c}$, realizamos a concatenação dos vetores de saída dos diferentes filtros.
-Esta operação de concatenação é realizada apenas entre os filtros que tem diferentes tamanhos de janela, conforme ilustra a Figura~\ref{fig:cnn-architecture-proposal}.
-Então para $k$ tamanhos de janelas diferentes, a operação de concatenação irá gerar um vetor $\bm{c}_{\bm{m}}$ através da junção dos $k$ vetores de saída diferentes.
-
-\begin{equation}\label{eq:concatenacao-cnn-cm}
-    \bm{c}_{\bm{m}} = \left[\bm{c}_{m_1}, \bm{c}_{m_2}, . . ., \bm{c}_{m_{k}}\right]
-\end{equation}
-
-Onde $\bm{c}_{\bm{m}}$ é o resultado da concatenação dos diferentes vetores $\bm{c}$, $\bm{m}$ é um vetor com os diferentes tamanhos de janela, $\bm{m} = \{m_1, m_2, . . ., m_{k}\}$, e $k$ é a quantidade de elementos. Somente ao final que aplicamos a camada \textit{maxpool}. A camada \textit{maxpool} aplica a operação \textit{max}, obtendo o vetor de representação final da sentença $\bm{c'}_{\bm{m}}$. A operação \textit{max} é aplicada no eixo $0$, conforme ilustra a Figura~\ref{fig:cnn-architecture-proposal}. Portanto o vetor final $\bm{c'}_{\bm{m}}$ é obtido da seguinte maneira:
+The feature map (or activation map) contains the latent and most important features of a sentence. A convolutional network may contain thousands of filters, each one extracting specific \emph{m-gram} features. A filter of $m$ size 2 extracts bigram features, size 3 extracts trigram features and so on. The number of feature maps is $|F|$, i.e., the number of filters. After the convolution operation, a pooling layer operates independently on every feature map resizing it spatially, using a max operation \cite{karpathy-course-cnn-2016}.  The max operation is applied along the $axis=0$ to produce the final vector $\bm{o}$:
 
 \begin{equation}
-    \bm{c'}_{\bm{m}} = max\left(\left[\bm{c}_{m_1}, \bm{c}_{m_2}, . . ., \bm{c}_{m_k}\right], axis = 0\right)
+    \bm{o} = max\left(\left[\bm{c}_{1}, \bm{c}_{2}, . . ., \bm{c}_{|F|}\right], axis = 0\right)
 \end{equation}
 
-Onde $axis$ define ao longo de qual eixo a função será aplicada. De forma equivalente, $\bm{c'}_{\bm{m}}$ poderia ser calculado do seguinte modo:
-
-\begin{equation}\label{eq:final_representation_cnn}
-    \bm{c'}_{\bm{m}} = \left[max(\bm{c}_{m_1}), max(\bm{c}_{m_2}), . . ., max(\bm{c}_{m_k})\right]
-\end{equation}
-
-A operação \textit{max} reduz a dimensionalidade extraindo o maior elemento de cada vetor. Esta redução da dimensionalidade é um fator importante para problemas de classificação, por exemplo. Independente do tamanho da entrada e do filtro, a dimensão da camada de saída vai ser mantida. Além disso, a camada \textit{maxpool} é invariante a pequenas translações. Isto permite extrair características relevantes (e.g. palavras referindo-se a leitura de arquivo: \emph{file} e \emph{open}) de uma sentença independente da sua localização e adiciona-las na representação final \citep{tom-young:trends-deep-learning-nlp}.
+The max pooling helps the convolutional network to be translation invariant. Regardless of the word's position shift, the max pooling selects the most relevant features and insert into the final vector \citep{tom-young:trends-deep-learning-nlp}. Figure~\ref{fig:cnn-steps-word-embedding} illustrates the full operation. Our sentence embedding is the vector $\bm{o}$, so $\bm{o}$ represents a question or a code snippet, in our case. 
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{figuras/cnn-steps-word-embedding.pdf}
-    \caption{Ilustração das 3 operações realizadas pela nossa arquitetura CNN para obter o vetor de representação final $\bm{c'}_{\bm{m}}$. Neste exemplo, utilizamos 3 filtros $\bm{F} \in \mathbb{R}^{m X d X f}$ com diferentes janelas $m$, onde $m = \{2, 3, 4\}$. Cada filtro tem tamanho $f = 2$. Temos um total de 6 filtros ao final. Cada filtro é aplicado a sentença $\bm{x} \in \mathbb{R}^{n X d}$, onde $n = 6$ e $d = 5$. O primeiro passo é a obtenção do vetor $\bm{c}$ de características. Posteriormente, é realização a operação de concatenação, no qual é obtido o vetor $\bm{c}_{\bm{m}}$, conforme descrito na operação~\ref{eq:concatenacao-cnn-cm}. Ao final, a operação \textit{max} é aplicada no eixo $0$, obtendo o vetor de representação final $\bm{c'}_{m}$. Este vetor $\bm{c'}_{m}$ será o nosso vetor de representação das nossas sentenças, i.e., o vetor de representação das questões e trechos de código-fonte. Figura adaptada do artigo de \cite{zhang-guide-convolutional-cnn-embedding-ilustration:2015}}
-    \label{fig:cnn-architecture-proposal}
+    \caption{TO-DO: Fix image according to new equation. Ilustração das 3 operações realizadas pela nossa arquitetura CNN para obter o vetor de representação final $\bm{c'}_{\bm{m}}$. Neste exemplo, utilizamos 3 filtros $\bm{F} \in \mathbb{R}^{m X d X f}$ com diferentes janelas $m$, onde $m = \{2, 3, 4\}$. Cada filtro tem tamanho $f = 2$. Temos um total de 6 filtros ao final. Cada filtro é aplicado a sentença $\bm{x} \in \mathbb{R}^{n X d}$, onde $n = 6$ e $d = 5$. O primeiro passo é a obtenção do vetor $\bm{c}$ de características. Posteriormente, é realização a operação de concatenação, no qual é obtido o vetor $\bm{c}_{\bm{m}}$, conforme descrito na operação~\ref{eq:concatenacao-cnn-cm}. Ao final, a operação \textit{max} é aplicada no eixo $0$, obtendo o vetor de representação final $\bm{c'}_{m}$. Este vetor $\bm{c'}_{m}$ será o nosso vetor de representação das nossas sentenças, i.e., o vetor de representação das questões e trechos de código-fonte. Figura adaptada do artigo de \cite{zhang-guide-convolutional-cnn-embedding-ilustration:2015}}
+    \label{fig:cnn-steps-word-embedding}
 \end{figure}
-
-
-
-
-Para exemplificar a operação completa, a Figura~\ref{fig:cnn-architecture-proposal} a seguir ilustra um exemplo da aplicação de diferentes filtros convolucionais com diferentes tamanhos de janela $m$ em uma sentença de 6 palavras. A sentença é representada através de um vetor $\bm{x} \in \mathbb{R}^{n X d}$, onde $n = 6$ e $d = 5$. Para um vetor $\bm{x} = \{\bm{x}(0), \bm{x}(1), . . ., \bm{x}(n - 1) \}$, $\bm{x}(i) \in \mathbb{R}^{d}, 0 \leq i < n$ é um vetor de representação distribuída e representa a $i^{th}$ palavra da sentença. Neste exemplo, temos 3 filtros $\bm{F} \in \mathbb{R}^{m x d}$, onde $d = 5$ e $m$ varia para cada um. Neste caso, os valores de $m$ são $2$, $3$ e $4$. Cada filtro tem tamanho $f = 2$, totalizando 6 filtros que são aplicados ao vetor $\bm{x}$, ao final.
-
-No nosso trabalho, utilizaremos $\bm{c'}_{\bm{m}}$ obtida através da operação~\ref{eq:final_representation_cnn} como o vetor de representação final da nossa sentença. No nosso caso, a sentença pode ser tanto uma questão quanto um trecho de código-fonte. O próximo passo é definir uma função objetivo que induza o nosso modelo a mapear estes vetores em um espaço vetorial, de tal forma que os vetores de representação de uma questão fiquem próximos dos vetores de trechos de código anotados como solução.
 
 \subsection{Joint embedding}
 
+In our work, we reduced code retrieval to a ranking problem, where a model should rank a relevant code in the firsts positions based on a developer's intent. In order to do that, we choose an objective function that prioritizes the relative preference of the code snippets, instead of a correct classification. The objective function, in our case, helps the neural network to discriminate the correct answers from incorrect ones during the training phase.
 
 
-\section{Experiment and Results}
+Given a question and code snippet set, $\mathbb{Q}$ and $\mathbb{C}$ respectively, our training input is composed by a triple $<\bm{q}, \bm{c^{+}}, \bm{c^{-}}>$, where $\bm{c^{+}} \in \mathbb{C}$ indicates a correct code snippet for a question $\bm{q} \in \mathbb{Q}$ and $\bm{c^{-}} \in \mathbb{C}$ its an incorret one sampled from the training data. We used the hinge loss as our objective function. Formally, for a triple $<\bm{q}, \bm{c^{+}}, \bm{c^{-}}>$, the definition of hinge loss is:
+
+\begin{equation}
+J = max(0, m - h_{\theta}(\bm{q}, \bm{c^{+}}) + h_{\theta}(\bm{q}, \bm{c^{-}}))
+\end{equation}
+
+$m$ its a margin and $h_{\theta}$ its a similarity function (e.g., \textit{cosine}). During the training phase, the goal is to minimize the cost function $J$. In order to obtain that, the model must satisfy the following condition: $h_{\theta}(\bm{q}, \bm{c^{+}}) - h_{\theta}(\bm{q}, \bm{c^{-}}) \geq m$. Then, the hinge loss function induces our model to score $c^{+}$ higher than $c^{-}$ for a given margin $m$. 
+
+Dado que estamos utilizando a função \textit{cosine} de similaridade, $h_{\theta}(\bm{q}, \bm{c})$ pode ser definido como $\{h_{\theta}(\bm{q}, \bm{c}) \in \mathbb{R} | -1 \leq h_{\theta}(\bm{q}, \bm{c}) \leq 1$\}, onde $\bm{q} \in \mathbb{Q}$, $\bm{c} \in \mathbb{C}$ e $-1$ indica vetores exatamente opostos e 1 vetores exatamente iguais. E conforme citado anteriormente, a nossa função $\mathbb{J}$ incentiva a seguinte condição: $h_{\theta}(\bm{q}, \bm{c^{+}}) \geq h_{\theta}(\bm{q}, \bm{c^{-}}) + m$. Desta forma, estamos estimulando os vetores $\bm{c^{+}}$ a ocuparem regiões próximas de $\bm{q}$, enquanto os vetores $\bm{c^{-}}$ serão estimulados a ocuparem regiões mais distantes. Este estímulo está de acordo com o nosso objetivo, que é encontrar um modelo que correlacione as questões as suas respostas.
+
+\section{Experiments}
+
+In this section, we compare our proposed algorithm (SQLRank) with other state-of-the-art algorithms on real world datasets. Note that our algorithm works for both implicit
+feedback and explicit feedback settings. In the implicit
+feedback setting, all the ratings are 0 or 1; in the explicit
+feedback setting, explicit ratings (e.g., 1 to 5) are given
+but only to a subset of user-item pairs. Since many real
+world recommendation systems follow the implicit feedback
+setting (e.g., purchases, clicks, or checkins), we will first
+compare SQL-Rank on implicit feedback datasets and show
+it outperforms state-of-the-art algorithms. Then we will
+verify that our algorithm also performs well on explicit
+feedback problems. All experiments are conducted on a
+server with an Intel Xeon E5-2640 2.40GHz CPU and 64G RAM.
+
+Avaliamos a arquitetura CNN juntamente com outras duas arquiteturas, Embedding e \Gls{unif} na recuperação de trecho de código-fonte através do procedimento proposto por \cite{iyer-etal-2016-summarizing} e descrito na Seção~\ref{sec:avaliacao}. Os resultados foram coletados a partir da amostra \emph{EVAL} e o valor final MRR é a média obtida após 20 iterações. Conforme a Tabela~\ref{table:resultados}, as arquiteturas CNNs compartilhadas com 4000 filtros convolucionais (linhas D3 e F3) obtiveram o melhor resultado. A arquitetura CNN obteve uma média MRR 5\% superior ao melhor resultado obtido pela arquitetura Unif (linha B1), atual estado da arte, e um resultado 11\% superior a arquitetura de referência Embedding (linha A1). 
+
+\begin{table*}[t]
+\centering
+\begin{tabular}{ p{1cm} p{6cm} >{\raggedleft\arraybackslash}p{4cm} >{\raggedleft\arraybackslash}p{4cm} }
+ \hline
+    & & \multicolumn{2}{c}{\textbf{Resultados}}\\
+ \hline
+ & \textbf{Modelos} & \textbf{MRR} & \textbf{TOP1}\\
+ \hline
+ A1 & Embedding (m = $0.1$) & $0.637$& $0.493 \pm 0.009$\\
+ 
+ \hline
+ 
+ B1 & Unif (m = $0.2$) & $0.675 \pm 0.006$ & $0.539 \pm 0.009$\\
+ 
+ \hline
+ 
+ C1 & CNN / F = 1000 & $0.669 \pm 0.006$ & $0.527 \pm 0.012$\\
+ 
+ C2 & CNN / F = 2000 & $0.673 \pm 0.007$ & $0.531 \pm 0.012$\\
+ 
+ C3 & CNN / F = 4000 & $0.687 \pm 0.006$ & $0.553 \pm 0.011$\\
+ 
+ \hline
+ 
+ D1 & CNN Compartilhado / F = 1000 & $0.678 \pm 0.007$ & $0.548 \pm 0.012$\\
+ 
+ D2 & CNN Compartilhado / F = 2000 & $0.694 \pm 0.008$ & $0.565 \pm 0.012$\\
+ 
+ D3 & CNN Compartilhado / F = 4000 & $0.700 \pm 0.004$ & $0.569 \pm 0.009$\\
+ 
+ \hline
+ 
+ E1 & CNN com NL / F = 1000 & $0.682 \pm 0.007$ & $0.543 \pm 0.012$\\
+ 
+ E2 & CNN com NL / F = 2000 & $0.689 \pm 0.006$ & $0.553 \pm 0.011$\\
+ 
+ E3 & CNN com NL / F = 4000 & $0.688 \pm 0.006$ & $0.553 \pm 0.011$\\
+ 
+ \hline
+ 
+ F1 & CNN Compartilhado com NL / F = 1000 & $0.690 \pm 0.008$ & $0.553 \pm 0.015$\\
+ 
+ F2 & CNN Compartilhado com NL / F = 2000 & $0.700 \pm 0.007$ & $0.573 \pm 0.012$\\
+ 
+ F3 & CNN Compartilhado com NL / F = 4000 & $0.701 \pm 0.008$ & $0.577 \pm 0.015$\\
+ 
+\hline
+\end{tabular}
+\caption{Resultado do modelo CNN em comparação com as outras arquiteturas unif e Embedding. MRR refere-se a média do resultado do Mean Reciprocal Rank na amostra EVAL. TOP1 refere-se a frequência da ocorrência da resposta anotada como correta na primeira posição em comparação com outros 49 distratores. Nas linhas A1 e B1, \emph{m} refere-se ao hiper-parâmetro margem utilizada na função de perda \emph{hinge}. F indica a quantidade de filtros convolucionais utilizados durante o treinamento das redes convolucionais. NL é o acrônimo de normalização em lote. As arquiteturas CNN utilizaram margem $m = 0.05$ e o tamanho da janela do filtro (kernel) $k = 2$.}
+\label{table:resultados}
+\end{table*}
+
+Conforme os resultados da Tabela~\ref{table:resultados}, os ajustes dos hiper-parâmetros para a arquitetura CNN foram ao encontro de \cite{tan-lstm-qa, feng-2015}, no qual verificaram que o aumento da quantidade de filtros convolucionais, que aumenta a capacidade das redes convolucionais e as características latentes a serem extraídas, resultaram em uma melhora no desempenho do modelo (linhas D3 e F3). Além disso, verificamos que o valor $2$ para o tamanho da janela dos filtros obteve os melhores resultados, não havendo melhora significativa para janelas de tamanho $3$ ou $4$. E diferentemente do apontamento feito por \cite{tang-hybrid-deep-representation-2018}, não notamos melhora no desempenho através da combinação de filtros com janelas de tamanhos diferentes, e.g., $2,3,5,7$ (ver Apêndice~\ref{ape:ajuste-hiper-parametros-cnn}). Porém com relação a margem utilizada na função de perda hinge, as redes convolucionais obtiveram um resultado melhor com $0.05$, já Unif obteve o melhor resultado com $0.2$ e enquanto Embedding obteve com $0.1$ (ver Apêndice~\ref{ape:ajuste-hiper-parametros-cnn}). No caso de \cite{tan-lstm-qa} ele fixou a margem em $0.2$. Em nosso caso, preferimos fixar valores diferentes de margem para cada arquitetura, pois conforme os experimentos descritos no Apêndice~\ref{ape:ajuste-hiper-parametros-cnn}, diferentes valores de margem levaram a diferentes desempenhos do modelo. E segundo \cite{park-regarding-margin-loss:2017}, nem sempre os valores mais altos para a margem levam a um melhor desempenho do modelo, por isso faz-se necessário o ajuste do parâmetro da função de perda \textit{hinge} também. 
+
+
+Conforme verificado por \cite{tan-lstm-qa} e \cite{feng-2015}, as redes convolucionais que compartilham os parâmetros dos pares de questões e respostas durante a aprendizagem (linhas D e F) obtiveram um desempenho superior aos modelos que utilizaram parâmetros independentes (linhas C e E). De acordo com \cite{tan-lstm-qa}, os parâmetros indepdendentes tornam a aprendizagem mais difícil, pois o otimizador terá que aprender o dobro de parâmetros. Já para \cite{wen-joint-modeling-question-answer-2019}, as redes convolucionais que aprendem as representações de forma independente e postergam a interação entre elas para a última camada (cálculo da similaridade e função de perda \textit{hinge}), exploram de forma ineficiente a correlação semântica entre as respectivas representações dos pares de questões e respostas. No nosso caso, verificamos que ao treinar por mais épocas, não houve melhora significativa no desempenho, salientando a dificuldade das redes convolucionais que aprendem as representações de forma independente em encontrar uma correlação semântica entre os pares de questões e respostas.
+
+Durante o treinamento, para evitar o \textit{overfitting} dos modelos, adotamos a técnica de normalização em lote, que além de melhorar o desempenho, a velocidade e a estabilidade das redes neurais, ele mitiga o \textit{overfitting}, reduzindo a necessidade do uso de outra técnica de regularização como o \textit{dropout} \citep{sergey-batch-normalization-2015}. No nosso caso, verificamos a melhora no desempenho e robustez das redes convolucionais (ver linhas E e F da Tabela~\ref{table:resultados} e ver Apêndice~\ref{ape:ajuste-hiper-parametros-cnn}). No caso da arquitetura Unif, optamos por manter a arquitetura padrão proposta por \cite{cambronero-deep-learning-code-search:2019}. E a arquitetura \textit{Embedding}, por ser mais simples e ter apenas uma camada de \textit{maxpool}, não teve a necessidade de regularização.
+
+
+Para entender um pouco melhor o resultado da média harmônica MRR, a Figura~\ref{fig:histogram-mrr} exibe as posições da primeira ocorrência do trecho de código-fonte encontradas durante a avaliação dos modelos.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{figuras/histogram.pdf}
+    \caption{Figura das primeiras posições observadas para o trecho de código-fonte anotado como correto. As legendas \emph{shared-cnn-with-bn}, \emph{unif} e \emph{embedding} referem-se as linhas F3, A1 e B1 da Tabela~\ref{table:resultados} respectivamente.}
+    \label{fig:histogram-mrr}
+\end{figure}
+
+
+Tanto o CNN quanto a arquitetura Unif conseguiram classificar os trechos de código-fonte entre as 3 (três) primeiras posições em 75\% dos casos. A nossa arquitetura proposta obteve uma precisão TOP-1 de aproximadamente 60\%, i.e., em aproximadamente 60\% das vezes, o trecho de código-fonte relevante ficou na primeira posição. Já a arquitetura Unif e Embedding obtiveram uma precisão TOP-1 de pouco mais de 50\%. Um ponto a ser levantado é que a nossa métrica MRR só leva em consideração a posição apontada pelo modelo para o trecho de código-fonte anotado como correto. Mesmo que o modelo apresente um outro trecho de código-fonte que também é solução, o nosso método de avaliação não leva em consideração. Neste caso, o modelo é penalizado.
 
 \subsection{Threats to validity}
+
+Conforme citado anteriormente, \cite{yao-2018} anotaram o conjunto de dados utilizando um framework proposto em seu artigo. Para anotá-los, os autores treinaram uma rede neural no conjunto de dados anotado manualmente. Em nosso trabalho, fizemos o caminho inverso. Treinamos os nossos modelos nos dados anotados automaticamente e avaliamos no conjunto anotado manualmente. Para diminuir o viés, adotamos o procedimento proposto por \cite{iyer-etal-2016-summarizing} descrito na Seções~\ref{sec:treinamento} e \ref{sec:avaliacao}.
 
 \section{Related Work}
 
