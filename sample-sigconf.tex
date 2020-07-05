@@ -291,25 +291,64 @@ Given a question and code snippet set, $\mathbb{Q}$ and $\mathbb{C}$ respectivel
 J = max(0, m - h_{\theta}(\bm{q}, \bm{c^{+}}) + h_{\theta}(\bm{q}, \bm{c^{-}}))
 \end{equation}
 
-$m$ its a margin and $h_{\theta}$ its a similarity function (e.g., \textit{cosine}). During the training phase, the goal is to minimize the cost function $J$. In order to obtain that, the model must satisfy the following condition: $h_{\theta}(\bm{q}, \bm{c^{+}}) - h_{\theta}(\bm{q}, \bm{c^{-}}) \geq m$. Then, the hinge loss function induces our model to score $c^{+}$ higher than $c^{-}$ for a given margin $m$. 
+$m$ its a margin and $h_{\theta}$ its a similarity function (e.g., \textit{cosine}). During the training phase, the goal is to minimize the cost function $J$. In order to obtain that, the model aims to satisfy the following condition: $h_{\theta}(\bm{q}, \bm{c^{+}}) - h_{\theta}(\bm{q}, \bm{c^{-}}) \geq m$. Then, the hinge loss function induces our model to score $c^{+}$ higher than $c^{-}$ for a given margin $m$. 
 
-Dado que estamos utilizando a função \textit{cosine} de similaridade, $h_{\theta}(\bm{q}, \bm{c})$ pode ser definido como $\{h_{\theta}(\bm{q}, \bm{c}) \in \mathbb{R} | -1 \leq h_{\theta}(\bm{q}, \bm{c}) \leq 1$\}, onde $\bm{q} \in \mathbb{Q}$, $\bm{c} \in \mathbb{C}$ e $-1$ indica vetores exatamente opostos e 1 vetores exatamente iguais. E conforme citado anteriormente, a nossa função $\mathbb{J}$ incentiva a seguinte condição: $h_{\theta}(\bm{q}, \bm{c^{+}}) \geq h_{\theta}(\bm{q}, \bm{c^{-}}) + m$. Desta forma, estamos estimulando os vetores $\bm{c^{+}}$ a ocuparem regiões próximas de $\bm{q}$, enquanto os vetores $\bm{c^{-}}$ serão estimulados a ocuparem regiões mais distantes. Este estímulo está de acordo com o nosso objetivo, que é encontrar um modelo que correlacione as questões as suas respostas.
+For the similarity function $h_{\theta}$, we used \emph{cosine}, such that $h_{\theta}(\bm{q}, \bm{c}) = \{h_{\theta}(\bm{q}, \bm{c}) \in \mathbb{R} | 0 \leq h_{\theta}(\bm{q}, \bm{c}) \leq 1$\} computes the similarity between the vector $\bm{q} \in \mathbb{Q}$ and $\bm{c} \in \mathbb{C}$, where $0$ indicate orthogonality e $1$ indicate greater similarity (citar keras documentacao).  Given that our objective function aims to satisfy the following condition: $h_{\theta}(\bm{q}, \bm{c^{+}}) \geq h_{\theta}(\bm{q}, \bm{c^{-}}) + m$. Thus, we are inducing our model to group $\bm{c^{+}}$ and $\bm{q}$ nearby, while the vectors $\bm{c^{-}}$ are far away (see Figure~\ref{fig:joint-embedding}). 
 
 \section{Experiments}
 
-In this section, we compare our proposed algorithm (SQLRank) with other state-of-the-art algorithms on real world datasets. Note that our algorithm works for both implicit
-feedback and explicit feedback settings. In the implicit
-feedback setting, all the ratings are 0 or 1; in the explicit
-feedback setting, explicit ratings (e.g., 1 to 5) are given
-but only to a subset of user-item pairs. Since many real
-world recommendation systems follow the implicit feedback
-setting (e.g., purchases, clicks, or checkins), we will first
-compare SQL-Rank on implicit feedback datasets and show
-it outperforms state-of-the-art algorithms. Then we will
-verify that our algorithm also performs well on explicit
-feedback problems. All experiments are conducted on a
-server with an Intel Xeon E5-2640 2.40GHz CPU and 64G RAM.
+We evaluated our proposed approach (CoNCRA) on StaQC dataset, a systematically mined question code dataset from StackOverflow (citar Yang...). The main difference of StaQC to other datasets (citar referencias TTT) is it is composed by ''how-to-do-it'' questions, as the answers to those type of questions are more straight. StaQC contains SQL and Python question and code pairs, but, in our preliminary experiment, we used the python ones only. Table~\ref{table:summary-training-data-yao-staqc} gives an overview about StaQC dataset.
 
+\begin{table}[h]
+\centering
+\begin{tabular}{ p{16em} P{10em} P{10em} }
+\hline
+  & \multicolumn{2}{c}{\textbf{Questão}}\\
+\hline
+\textbf{Código-fonte} & \textbf{Python} & \textbf{SQL}  \\
+\hline
+
+$N_{1}$: Apenas 1 trecho de código na descrição da resposta & $85.294$ & $75.637$ \\
+
+$N_{2}$: Trechos de código-fonte anotados automaticamente & $60.083$ & $41.826$ \\
+
+$N_{3}$: Trechos de código-fonte anotados manualmente & $2.169$ & $2.056$  \\
+
+ \hline
+ \textbf{Total} & $\bm{147.546}$ & $\bm{119.519}$\\
+ \hline 
+ 
+\end{tabular}
+\caption{Divisão do conjunto de dados disponibilizado por \cite{yao-2018}. O conjunto formado por "Trechos de código-fonte anotados automaticamente" contém questões que tem mais de um trecho de código-fonte por resposta. Quando há mais de um trecho de código-fonte na descrição da resposta, pode haver algum trecho que não seja solução. Nesse caso, \cite{yao-2018} criaram um framework para anotá-los automaticamente e obtiveram F1 de $0,916$ e acurácia de $0,911$ em seus resultados de classificação automática das respostas corretas.}
+\label{table:summary-training-data-yao-staqc}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ l r  }
+ \hline
+ \textbf{Amostras} & \textbf{Quantidade de pares $<q_{i}, c_{i}^{+}>$}\\
+ \hline
+ $N_{2} = \text{Treinamento}$ & $60.083$\\
+ 
+ $N_{3} \supset \text{DEV}$ & $1.085$ \\
+ 
+ $N_{3} \supset \text{EVAL}$ & $1.084$\\
+ \hline
+ \textbf{Total} & $\bm{62.252}$\\
+ \hline
+\end{tabular}
+\caption{Divisão das amostras para treinamento e avaliação. O conjunto de dados é formado por pares $<q_{i}, c_{i}^{+}>$, onde $q_{i}$ é uma questão e $c_{i}^{+}$ é um trecho de código-fonte anotado como correto. O conjunto formado por pares anotados manualmente foi dividido em DEV e EVAL conforme o procedimento descrito por \cite{iyer-etal-2016-summarizing}. É possível visualizar uma ilustração deste procedimento nas Figuras \ref{fig:evaluation-process} e \ref{fig:final-evaluation-process}.}
+\label{table:training-sample-division}
+\end{table}
+
+We trained our model on sample $N2$ (see Table~\ref{table:summary-training-data-yao-staqc} and Table~\ref{table:training-sample-division}), because 27\% of the questions contains more than one answer annotated, leading to more variance in our training dataset. The training and evaluation follows the Iyer XXXX procedure, where the model is evaluated on an manually annotated dataset each epoch based on mean reciprocal rank (MRR). The MRR tells if your model ranked the annotated answer in higher positions or not, higher values indicates the accepted answers were ranked in the firts positions.
+
+For the training phase, we used 70\% of $N2$ sample for training and 30\% for validation. The models runs during 500 epochs and stops early if the training loss ($J$) is less than $0.0001$ or the validation loss doesn't improve after 25 consecutive epoches. We choose the best model of the training phase according to MRR and run it 20 times in the $N3$ sample for the final evaluation (see Table~\ref{table:training-sample-division}). The final result is the average of the MRR for each pair $<q_{i}, c_{i}^{+}>$ of $N3$ and other 49 distractors $c_{j}$, selected randomly from the training sample, such that $c_{i}^{+} \neq c_{j}$.
+
+ We provided the source code for our preliminary experiments in the following repository: \url{https://github.com/mrezende/concra}. The repository contains our proposed model, the baseline models, training and evaluation source code. We also provided the original and pre-processed dataset. The source code is written in Python, version 3.6.9, and we used the libraries Keras (version 2.2.4-tf) and Tensorflow (1.15.2). The preliminary experiments were all conducted in the Colab, a Google platform that allows to run arbitrary python code from the browser and it's specially suited for machine learning and data analysis research.
+
+\subsection{Results}
 Avaliamos a arquitetura CNN juntamente com outras duas arquiteturas, Embedding e \Gls{unif} na recuperação de trecho de código-fonte através do procedimento proposto por \cite{iyer-etal-2016-summarizing} e descrito na Seção~\ref{sec:avaliacao}. Os resultados foram coletados a partir da amostra \emph{EVAL} e o valor final MRR é a média obtida após 20 iterações. Conforme a Tabela~\ref{table:resultados}, as arquiteturas CNNs compartilhadas com 4000 filtros convolucionais (linhas D3 e F3) obtiveram o melhor resultado. A arquitetura CNN obteve uma média MRR 5\% superior ao melhor resultado obtido pela arquitetura Unif (linha B1), atual estado da arte, e um resultado 11\% superior a arquitetura de referência Embedding (linha A1). 
 
 \begin{table*}[t]
