@@ -199,6 +199,7 @@ by the good results of convolutional networks at Natutal Language Processing (NL
 
 
 \section{Methodology}
+\label{sec:methodology}
 
 According to \cite{cambronero-deep-code-search-2019}, the main goal of code retrieval is:
 
@@ -281,6 +282,7 @@ The max pooling helps the convolutional network to be translation invariant. Reg
 \end{figure}
 
 \subsection{Joint embedding}
+\label{sec:joint-embedding}
 
 In our work, we reduced code retrieval to a ranking problem, where a model should rank a relevant code in the firsts positions based on a developer's intent. In order to do that, we choose an objective function that prioritizes the relative preference of the code snippets, instead of a correct classification. The objective function, in our case, helps the neural network to discriminate the correct answers from incorrect ones during the training phase.
 
@@ -303,23 +305,23 @@ We evaluated our proposed approach (CoNCRA) on StaQC dataset, a systematically m
 \centering
 \begin{tabular}{ p{16em} P{10em} P{10em} }
 \hline
-  & \multicolumn{2}{c}{\textbf{Questão}}\\
+  & \multicolumn{2}{c}{\textbf{Question}}\\
 \hline
-\textbf{Código-fonte} & \textbf{Python} & \textbf{SQL}  \\
+\textbf{Code snippet} & \textbf{Python} & \textbf{SQL}  \\
 \hline
 
-$N_{1}$: Apenas 1 trecho de código na descrição da resposta & $85.294$ & $75.637$ \\
+$N_{1}$: Single code snippet in the answer description & $85.294$ & $75.637$ \\
 
-$N_{2}$: Trechos de código-fonte anotados automaticamente & $60.083$ & $41.826$ \\
+$N_{2}$: Automatically annotated code snippets & $60.083$ & $41.826$ \\
 
-$N_{3}$: Trechos de código-fonte anotados manualmente & $2.169$ & $2.056$  \\
+$N_{3}$: Manually annotated code snippets & $2.169$ & $2.056$  \\
 
  \hline
  \textbf{Total} & $\bm{147.546}$ & $\bm{119.519}$\\
  \hline 
  
 \end{tabular}
-\caption{Divisão do conjunto de dados disponibilizado por \cite{yao-2018}. O conjunto formado por "Trechos de código-fonte anotados automaticamente" contém questões que tem mais de um trecho de código-fonte por resposta. Quando há mais de um trecho de código-fonte na descrição da resposta, pode haver algum trecho que não seja solução. Nesse caso, \cite{yao-2018} criaram um framework para anotá-los automaticamente e obtiveram F1 de $0,916$ e acurácia de $0,911$ em seus resultados de classificação automática das respostas corretas.}
+\caption{Summary of StaQC dataset \cite{yao-2018}. Questions from $N2$ sample ("Automatically annotated code snippets") may contain more than one code snippet per answer description. Some code snippets may not be a solution for the question. So, the authors proposed a framework to annotate the code snippets automatically and it could achieve a F1 score of $0,916$ and an accuracy of $0,911$.}
 \label{table:summary-training-data-yao-staqc}
 \end{table}
 
@@ -327,9 +329,9 @@ $N_{3}$: Trechos de código-fonte anotados manualmente & $2.169$ & $2.056$  \\
 \centering
 \begin{tabular}{ l r  }
  \hline
- \textbf{Amostras} & \textbf{Quantidade de pares $<q_{i}, c_{i}^{+}>$}\\
+ \textbf{Sample} & \textbf{Quantity of pairs $<q_{i}, c_{i}^{+}>$}\\
  \hline
- $N_{2} = \text{Treinamento}$ & $60.083$\\
+ $N_{2} = \text{Training}$ & $60.083$\\
  
  $N_{3} \supset \text{DEV}$ & $1.085$ \\
  
@@ -338,7 +340,7 @@ $N_{3}$: Trechos de código-fonte anotados manualmente & $2.169$ & $2.056$  \\
  \textbf{Total} & $\bm{62.252}$\\
  \hline
 \end{tabular}
-\caption{Divisão das amostras para treinamento e avaliação. O conjunto de dados é formado por pares $<q_{i}, c_{i}^{+}>$, onde $q_{i}$ é uma questão e $c_{i}^{+}$ é um trecho de código-fonte anotado como correto. O conjunto formado por pares anotados manualmente foi dividido em DEV e EVAL conforme o procedimento descrito por \cite{iyer-etal-2016-summarizing}. É possível visualizar uma ilustração deste procedimento nas Figuras \ref{fig:evaluation-process} e \ref{fig:final-evaluation-process}.}
+\caption{Summary of our training and evaluation samples. The samples are composed by a pair $<q_{i}, c_{i}^{+}>$, where $q_{i}$ it's a question and $c_{i}^{+}$ its a code snippet annotated as solution. We spplited the manually annotated dataset in two parts: DEV and EVAL, according to \cite{iyer-etal-2016-summarizing} procedure. }
 \label{table:training-sample-division}
 \end{table}
 
@@ -346,18 +348,27 @@ We trained our model on sample $N2$ (see Table~\ref{table:summary-training-data-
 
 For the training phase, we used 70\% of $N2$ sample for training and 30\% for validation. The models runs during 500 epochs and stops early if the training loss ($J$) is less than $0.0001$ or the validation loss doesn't improve after 25 consecutive epoches. We choose the best model of the training phase according to MRR and run it 20 times in the $N3$ sample for the final evaluation (see Table~\ref{table:training-sample-division}). The final result is the average of the MRR for each pair $<q_{i}, c_{i}^{+}>$ of $N3$ and other 49 distractors $c_{j}$, selected randomly from the training sample, such that $c_{i}^{+} \neq c_{j}$.
 
- We provided the source code for our preliminary experiments in the following repository: \url{https://github.com/mrezende/concra}. The repository contains our proposed model, the baseline models, training and evaluation source code. We also provided the original and pre-processed dataset. The source code is written in Python, version 3.6.9, and we used the libraries Keras (version 2.2.4-tf) and Tensorflow (1.15.2). The preliminary experiments were all conducted in the Colab, a Google platform that allows to run arbitrary python code from the browser and it's specially suited for machine learning and data analysis research.
+ We provided the source code for our preliminary experiments in the following repository: \url{https://github.com/mrezende/concra}. The repository contains our proposed model, the baseline ones, training and evaluation source code. We also provided the original and pre-processed dataset. The source code is written in Python, version 3.6.9, and we used the libraries Keras (version 2.2.4-tf) and Tensorflow (1.15.2). The preliminary experiments were all conducted in the Colab, a Google platform that allows to run arbitrary python code from the browser and it's specially suited for machine learning and data analysis research cita Google colab YYY.
 
 \subsection{Results}
-Avaliamos a arquitetura CNN juntamente com outras duas arquiteturas, Embedding e \Gls{unif} na recuperação de trecho de código-fonte através do procedimento proposto por \cite{iyer-etal-2016-summarizing} e descrito na Seção~\ref{sec:avaliacao}. Os resultados foram coletados a partir da amostra \emph{EVAL} e o valor final MRR é a média obtida após 20 iterações. Conforme a Tabela~\ref{table:resultados}, as arquiteturas CNNs compartilhadas com 4000 filtros convolucionais (linhas D3 e F3) obtiveram o melhor resultado. A arquitetura CNN obteve uma média MRR 5\% superior ao melhor resultado obtido pela arquitetura Unif (linha B1), atual estado da arte, e um resultado 11\% superior a arquitetura de referência Embedding (linha A1). 
+
+For the final evaluation, we compared the following models:
+
+\begin{itemize}
+    \item \emph{CoNCRA}: our proposed approach described in the Section~\ref{sec:methodology}. We tried two variations of our approach, the Convolutional Neural Network (CNN) and Shared CNN. The main difference between them is that Shared CNN shared the weights during the process of learning the question and code snippet embeddings, while CNN has to learn different weights for each one.
+    \item \emph{Embedding}: it's our baseline model. It's a simple architecture that applies a max pooling layer to the word embeddings. 
+    \item \emph{Unif}: it's a architecture proposed by \cite{cambronero-deep-code-search-2019}. They used two distinct layers for the question and code snippet embedding. They applied an average pooling layer to word embedding in order to learn the question embeddings. For the code snippet embedding, they used an attention mechanism, which applies a weighted average to each word embedding, ''giving an attention'' to the most relevant word of the sentence.
+\end{itemize}
+
+All the models used the joint embedding technique described in the Section~\ref{sec:joint-embedding}. Table~\ref{table:resultados} shows the final results we got after 20 runs on the $N3$ sample. Shared CNN with 4000 filters got the best results (lines D3 e F3). Our proposed architecture achieved a MRR score 5\% higher on average than the best result obtained by Unif (linha B1), actual state of art. Our MRR result is 11\% higher than the baseline model (linha A1). 
 
 \begin{table*}[t]
 \centering
 \begin{tabular}{ p{1cm} p{6cm} >{\raggedleft\arraybackslash}p{4cm} >{\raggedleft\arraybackslash}p{4cm} }
  \hline
-    & & \multicolumn{2}{c}{\textbf{Resultados}}\\
+    & & \multicolumn{2}{c}{\textbf{Results}}\\
  \hline
- & \textbf{Modelos} & \textbf{MRR} & \textbf{TOP1}\\
+ & \textbf{Models} & \textbf{MRR} & \textbf{TOP1}\\
  \hline
  A1 & Embedding (m = $0.1$) & $0.637$& $0.493 \pm 0.009$\\
  
@@ -375,27 +386,27 @@ Avaliamos a arquitetura CNN juntamente com outras duas arquiteturas, Embedding e
  
  \hline
  
- D1 & CNN Compartilhado / F = 1000 & $0.678 \pm 0.007$ & $0.548 \pm 0.012$\\
+ D1 & Shared CNN / F = 1000 & $0.678 \pm 0.007$ & $0.548 \pm 0.012$\\
  
- D2 & CNN Compartilhado / F = 2000 & $0.694 \pm 0.008$ & $0.565 \pm 0.012$\\
+ D2 & Shared CNN / F = 2000 & $0.694 \pm 0.008$ & $0.565 \pm 0.012$\\
  
- D3 & CNN Compartilhado / F = 4000 & $0.700 \pm 0.004$ & $0.569 \pm 0.009$\\
- 
- \hline
- 
- E1 & CNN com NL / F = 1000 & $0.682 \pm 0.007$ & $0.543 \pm 0.012$\\
- 
- E2 & CNN com NL / F = 2000 & $0.689 \pm 0.006$ & $0.553 \pm 0.011$\\
- 
- E3 & CNN com NL / F = 4000 & $0.688 \pm 0.006$ & $0.553 \pm 0.011$\\
+ D3 & Shared CNN / F = 4000 & $0.700 \pm 0.004$ & $0.569 \pm 0.009$\\
  
  \hline
  
- F1 & CNN Compartilhado com NL / F = 1000 & $0.690 \pm 0.008$ & $0.553 \pm 0.015$\\
+ E1 & CNN with BN / F = 1000 & $0.682 \pm 0.007$ & $0.543 \pm 0.012$\\
  
- F2 & CNN Compartilhado com NL / F = 2000 & $0.700 \pm 0.007$ & $0.573 \pm 0.012$\\
+ E2 & CNN with BN / F = 2000 & $0.689 \pm 0.006$ & $0.553 \pm 0.011$\\
  
- F3 & CNN Compartilhado com NL / F = 4000 & $0.701 \pm 0.008$ & $0.577 \pm 0.015$\\
+ E3 & CNN with BN / F = 4000 & $0.688 \pm 0.006$ & $0.553 \pm 0.011$\\
+ 
+ \hline
+ 
+ F1 & Shared CNN with BN / F = 1000 & $0.690 \pm 0.008$ & $0.553 \pm 0.015$\\
+ 
+ F2 & Shared CNN with BN / F = 2000 & $0.700 \pm 0.007$ & $0.573 \pm 0.012$\\
+ 
+ F3 & Shared CNN with BN / F = 4000 & $0.701 \pm 0.008$ & $0.577 \pm 0.015$\\
  
 \hline
 \end{tabular}
@@ -403,89 +414,33 @@ Avaliamos a arquitetura CNN juntamente com outras duas arquiteturas, Embedding e
 \label{table:resultados}
 \end{table*}
 
-Conforme os resultados da Tabela~\ref{table:resultados}, os ajustes dos hiper-parâmetros para a arquitetura CNN foram ao encontro de \cite{tan-lstm-qa, feng-2015}, no qual verificaram que o aumento da quantidade de filtros convolucionais, que aumenta a capacidade das redes convolucionais e as características latentes a serem extraídas, resultaram em uma melhora no desempenho do modelo (linhas D3 e F3). Além disso, verificamos que o valor $2$ para o tamanho da janela dos filtros obteve os melhores resultados, não havendo melhora significativa para janelas de tamanho $3$ ou $4$. E diferentemente do apontamento feito por \cite{tang-hybrid-deep-representation-2018}, não notamos melhora no desempenho através da combinação de filtros com janelas de tamanhos diferentes, e.g., $2,3,5,7$ (ver Apêndice~\ref{ape:ajuste-hiper-parametros-cnn}). Porém com relação a margem utilizada na função de perda hinge, as redes convolucionais obtiveram um resultado melhor com $0.05$, já Unif obteve o melhor resultado com $0.2$ e enquanto Embedding obteve com $0.1$ (ver Apêndice~\ref{ape:ajuste-hiper-parametros-cnn}). No caso de \cite{tan-lstm-qa} ele fixou a margem em $0.2$. Em nosso caso, preferimos fixar valores diferentes de margem para cada arquitetura, pois conforme os experimentos descritos no Apêndice~\ref{ape:ajuste-hiper-parametros-cnn}, diferentes valores de margem levaram a diferentes desempenhos do modelo. E segundo \cite{park-regarding-margin-loss:2017}, nem sempre os valores mais altos para a margem levam a um melhor desempenho do modelo, por isso faz-se necessário o ajuste do parâmetro da função de perda \textit{hinge} também. 
+According to Table~\ref{table:resultados}, an increase in the number of filters results in a better performance for CNN, as the model capacity and the number of extracted features grow (lines D3 e F3). 
+We tried different margin loss (see Section~\ref{fig:joint-embedding}), CNN got the best results with  $0.05$, while Unif and Embedding got better results with $0.2$ and $0.1$ respectively. 
 
 
-Conforme verificado por \cite{tan-lstm-qa} e \cite{feng-2015}, as redes convolucionais que compartilham os parâmetros dos pares de questões e respostas durante a aprendizagem (linhas D e F) obtiveram um desempenho superior aos modelos que utilizaram parâmetros independentes (linhas C e E). De acordo com \cite{tan-lstm-qa}, os parâmetros indepdendentes tornam a aprendizagem mais difícil, pois o otimizador terá que aprender o dobro de parâmetros. Já para \cite{wen-joint-modeling-question-answer-2019}, as redes convolucionais que aprendem as representações de forma independente e postergam a interação entre elas para a última camada (cálculo da similaridade e função de perda \textit{hinge}), exploram de forma ineficiente a correlação semântica entre as respectivas representações dos pares de questões e respostas. No nosso caso, verificamos que ao treinar por mais épocas, não houve melhora significativa no desempenho, salientando a dificuldade das redes convolucionais que aprendem as representações de forma independente em encontrar uma correlação semântica entre os pares de questões e respostas.
+We verified that shared weights models (lines D e F) got better results than independently weights ones (lines C e E). One reason is that the optimizer of independently weights architecture has to learn the double of parameters, increasing the learning difficulty (citar Feng TTTT). We also tried a batch normalization technique to avoid overfitting and help our models to learn quickly and more stable, but only CNN and Shared CNN got better results. For Unif and Embedding, it didn't improve the performance at all. 
 
-Durante o treinamento, para evitar o \textit{overfitting} dos modelos, adotamos a técnica de normalização em lote, que além de melhorar o desempenho, a velocidade e a estabilidade das redes neurais, ele mitiga o \textit{overfitting}, reduzindo a necessidade do uso de outra técnica de regularização como o \textit{dropout} \citep{sergey-batch-normalization-2015}. No nosso caso, verificamos a melhora no desempenho e robustez das redes convolucionais (ver linhas E e F da Tabela~\ref{table:resultados} e ver Apêndice~\ref{ape:ajuste-hiper-parametros-cnn}). No caso da arquitetura Unif, optamos por manter a arquitetura padrão proposta por \cite{cambronero-deep-learning-code-search:2019}. E a arquitetura \textit{Embedding}, por ser mais simples e ter apenas uma camada de \textit{maxpool}, não teve a necessidade de regularização.
-
-
-Para entender um pouco melhor o resultado da média harmônica MRR, a Figura~\ref{fig:histogram-mrr} exibe as posições da primeira ocorrência do trecho de código-fonte encontradas durante a avaliação dos modelos.
+The Figure~\ref{fig:histogram-mrr} illustrates the MRR (Mean Reciprocal Rank), showing the first position of the annotated code snippet during the final evaluation.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{figuras/histogram.pdf}
-    \caption{Figura das primeiras posições observadas para o trecho de código-fonte anotado como correto. As legendas \emph{shared-cnn-with-bn}, \emph{unif} e \emph{embedding} referem-se as linhas F3, A1 e B1 da Tabela~\ref{table:resultados} respectivamente.}
+    \caption{Illustration of the firsts positions observed for the annotated code snippet during the final evaluation. The labels \emph{shared-cnn-with-bn}, \emph{unif} and \emph{embedding} refer to lines F3, A1 e B1, respectively, in the Table~\ref{table:resultados}.}
     \label{fig:histogram-mrr}
 \end{figure}
 
 
-Tanto o CNN quanto a arquitetura Unif conseguiram classificar os trechos de código-fonte entre as 3 (três) primeiras posições em 75\% dos casos. A nossa arquitetura proposta obteve uma precisão TOP-1 de aproximadamente 60\%, i.e., em aproximadamente 60\% das vezes, o trecho de código-fonte relevante ficou na primeira posição. Já a arquitetura Unif e Embedding obtiveram uma precisão TOP-1 de pouco mais de 50\%. Um ponto a ser levantado é que a nossa métrica MRR só leva em consideração a posição apontada pelo modelo para o trecho de código-fonte anotado como correto. Mesmo que o modelo apresente um outro trecho de código-fonte que também é solução, o nosso método de avaliação não leva em consideração. Neste caso, o modelo é penalizado.
+Both CNN and Unif ranked the code snippets among the first 3 positions in 75\% of cases. We got a TOP-1 accuracy of 60\%, i.e., we ranked the relevant code snippet first place in 60\% of cases. Unif and Embedding got a TOP-1 accuracy of almost 50\%. One thing to note however is that MRR takes only the position of the annotated code snippet into consideration. Then, if the model shows up another code snippet, which answers the question correctly, our metric doesn't take it into account. In the end, the model is penalized. 
 
 \subsection{Threats to validity}
 
-Conforme citado anteriormente, \cite{yao-2018} anotaram o conjunto de dados utilizando um framework proposto em seu artigo. Para anotá-los, os autores treinaram uma rede neural no conjunto de dados anotado manualmente. Em nosso trabalho, fizemos o caminho inverso. Treinamos os nossos modelos nos dados anotados automaticamente e avaliamos no conjunto anotado manualmente. Para diminuir o viés, adotamos o procedimento proposto por \cite{iyer-etal-2016-summarizing} descrito na Seções~\ref{sec:treinamento} e \ref{sec:avaliacao}.
-
-\section{Related Work}
+We trained the models on StaQC dataset, a systematically mined question code dataset. The authors used a neural network to annotate the code snippet and trained it on a manually dataset. In our case, we trained the models on the automatically annotated corpus and evaluated on the manually ones. To mitigate the bias, we adopted the Iyer YYYY procedure for training and evaluation.
 
 \section{Conclusion}
 
-\section{Acknowledgments}
+According to results, our proposed approach is a prominent techique. We got results comparable to Unif, actual state of art, where we could achieve a MRR score 5\% higher on average. Our model ranked the most relevant code snippet among the first 3 (three) positions in 78\% of cases. We achieved a TOP-1 accuracy of 60\%, while the others techniques got 50\%. 
 
-Identification of funding sources and other support, and thanks to
-individuals and groups that assisted in the research and the
-preparation of the work should be included in an acknowledgment
-section, which is placed just before the reference section in your
-document.
-
-This section has a special environment:
-\begin{verbatim}
-  \begin{acks}
-  ...
-  \end{acks}
-\end{verbatim}
-so that the information contained therein can be more easily collected
-during the article metadata extraction phase, and to ensure
-consistency in the spelling of the section heading.
-
-Authors should not prepare this section as a numbered or unnumbered {\verb|\section|}; please use the ``{\verb|acks|}'' environment.
-
-\section{Appendices}
-
-If your work needs an appendix, add it before the
-``\verb|\end{document}|'' command at the conclusion of your source
-document.
-
-Start the appendix with the ``\verb|appendix|'' command:
-\begin{verbatim}
-  \appendix
-\end{verbatim}
-and note that in the appendix, sections are lettered, not
-numbered. This document has two appendices, demonstrating the section
-and subsection identification method.
-
-\section{SIGCHI Extended Abstracts}
-
-The ``\verb|sigchi-a|'' template style (available only in \LaTeX\ and
-not in Word) produces a landscape-orientation formatted article, with
-a wide left margin. Three environments are available for use with the
-``\verb|sigchi-a|'' template style, and produce formatted output in
-the margin:
-\begin{itemize}
-\item {\verb|sidebar|}:  Place formatted text in the margin.
-\item {\verb|marginfigure|}: Place a figure in the margin.
-\item {\verb|margintable|}: Place a table in the margin.
-\end{itemize}
-
-%%
-%% The acknowledgments section is defined using the "acks" environment
-%% (and NOT an unnumbered section). This ensures the proper
-%% identification of the section in the article metadata, and the
-%% consistent spelling of the heading.
-\begin{acks}
-To Robert, for the bagels and explaining CMYK and color spaces.
-\end{acks}
+Although the results seems good, it's a preliminary experiment, a further investigation is needed to see if our model is invariant to others datasets. We also would like to try a transfer learning, e.g., check if a model trained on a StackOverflow dataset (curated corpus) is able to find relevant code snippets in a Github corpus (non-curated one). Our approach is based on a NLP technique proposed by Feng ...., we think future works may use transformers and autoencoders, as those techniques showed good results in many NLP tasks. 
 
 %%
 %% The next two lines define the bibliography style to be used, and
@@ -495,37 +450,7 @@ To Robert, for the bagels and explaining CMYK and color spaces.
 
 %%
 %% If your work has an appendix, this is the place to put it.
-\appendix
 
-\section{Research Methods}
-
-\subsection{Part One}
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi
-malesuada, quam in pulvinar varius, metus nunc fermentum urna, id
-sollicitudin purus odio sit amet enim. Aliquam ullamcorper eu ipsum
-vel mollis. Curabitur quis dictum nisl. Phasellus vel semper risus, et
-lacinia dolor. Integer ultricies commodo sem nec semper.
-
-\subsection{Part Two}
-
-Etiam commodo feugiat nisl pulvinar pellentesque. Etiam auctor sodales
-ligula, non varius nibh pulvinar semper. Suspendisse nec lectus non
-ipsum convallis congue hendrerit vitae sapien. Donec at laoreet
-eros. Vivamus non purus placerat, scelerisque diam eu, cursus
-ante. Etiam aliquam tortor auctor efficitur mattis.
-
-\section{Online Resources}
-
-Nam id fermentum dui. Suspendisse sagittis tortor a nulla mollis, in
-pulvinar ex pretium. Sed interdum orci quis metus euismod, et sagittis
-enim maximus. Vestibulum gravida massa ut felis suscipit
-congue. Quisque mattis elit a risus ultrices commodo venenatis eget
-dui. Etiam sagittis eleifend elementum.
-
-Nam interdum magna at lectus dignissim, ac dignissim lorem
-rhoncus. Maecenas eu arcu ac neque placerat aliquam. Nunc pulvinar
-massa et mattis lacinia.
 
 \end{document}
 \endinput
