@@ -155,8 +155,8 @@ SOFTWARE ENGINEERING (SBES 2020),
 %% information and the body of the document, and typically spans the
 %% page.
 \begin{teaserfigure}
-  \includegraphics[width=\textwidth]{figuras/joint_embedding.pdf}
-  \caption{TODO: FIX translation Illustration of \emph{joint embedding} technique for code retrieval. Two neural networks map a question and a code snippet into a common vector space. The distance between the vectors reflects the relevance of a code snippet to a question.}
+  \includegraphics[width=\textwidth]{figuras/joint_embedding-article.pdf}
+  \caption{Illustration of \emph{joint embedding} technique for code retrieval. Two neural networks map a question and a code snippet into a common vector space. The distance between the vectors reflects the relevance of a code snippet to a question.}
   \Description{None}
   \label{fig:joint-embedding}
 \end{teaserfigure}
@@ -170,23 +170,23 @@ SOFTWARE ENGINEERING (SBES 2020),
 
 The advent of open source code and open question answering sites related to programming contributed to improve the way developers code today. Nowadays, code search is a daily routine task at software development process. Developers spend 15\% of their time searching for how a code works, a bug fix and API's usage \cite{what-developers-search-for-on-the-web:xia:2017}. According to \cite{sadowski-how-developers-search-for-code-case-study:2015}, developers at Google search for code 12 times a day, clicking on 2 to 3 results by average per search session. Most of them are looking for code examples. Thus, improve the way developers find a code it's an important productivity tool.  
 
-Most of developers use general purpose search engine (GPSE) to look for code (e.g. Google). GPSE uses page rank and other indexes tactics that are not optimized for searching code. Then, GPSE are not capable of finding a code semantically, unless a code has a accompanying description. According to ZZZ, developers spend more time, visit more pages and change a query more times when they are searching for code compared to non-code related search.
+Most of developers use general purpose search engine (GPSE) to look for code (e.g. Google). GPSE uses page rank and other indexes tactics that are not optimized for searching code. Then, GPSE are not capable of finding a code semantically, unless a code has a accompanying description. According to \cite{masudur-developers-use-google-code-retrieval:2018}, developers spend more time, visit more pages and change a query more times when they are searching for code compared to non-code related search.
 
-GitHub, a popular open source code repository, have tried to build a semantic code search. They extracted millions of lines of code from his repositories and matched each code with a dosctring. The final results weren't satisfactory, the tool could find a relevant code only if the query matches the docstring description (cite HHHHHH). According to XXXXX, a user's intent were better matched with questions extracted from open question-answering sites related to programming, e.g., StackOverflow. Those sites permit users to ask a question and check the best answer for him. Other users can vote for the most helpful answer and mark wrong or not helpful ones. Those collective actions help to curate and organize information, creating a valuable repository.
+GitHub, a popular open source code repository, have tried to build a semantic code search. They extracted millions of lines of code from his repositories and matched each code with a dosctring. The final results weren't satisfactory, the tool could find a relevant code only if the query matches the docstring description \citep{husain-github-semantic-search-code-2019}. According to \cite{cambronero-deep-code-search-2019}, a user's intent were better matched with questions extracted from open question-answering sites related to programming, e.g., StackOverflow. Those sites permit users to ask a question and check the best answer for him. Other users can vote for the most helpful answer and mark wrong or not helpful ones. Those collective actions help to curate and organize information, creating a valuable repository.
 
-There are a lot of works about semantic code search (UUUUUU). The first ones were based on deductive-logic rules and manual feature extraction from code. The recent success of artificial neural networks, due to Big Data and computational resources available, shifted works to machine learning based approach. ZZZZZ also coined a name, neural code search, i.e., code search based on neural networks.
+There are a lot of works about semantic code search \citep{Allamanis:2018:SML}. The first ones were based on deductive-logic rules and manual feature extraction from code. The recent success of artificial neural networks, due to Big Data and computational resources available, shifted works to machine learning based approach. \cite{cambronero-deep-code-search-2019} also coined a name, neural code search, i.e., code search based on neural networks.
 
-Most of works applied neural networks to summarize and retrieve code snippets. Code summarization and retrieval are two different activities, each one with it's metric and trait. We are proposing an novel approach for code retrieval. Different from other works, which presented an neural network with attention mechanism and a recurrent neural network (RRRR, GGGG), we are proposing a code retrieval based on convolutional networks. ZZZ and YYY paired code snippets and docstring, we matched code with questions extracted from StackOverflow.
+Most of works applied neural networks to summarize and retrieve code snippets. Code summarization and retrieval are two different activities, each one with it's metric and trait. We are proposing an novel approach for code retrieval. Different from other works, which presented an neural network with attention mechanism and a recurrent neural network \cite{cambronero-deep-code-search-2019, Gu-deep-code-search:2018}, we are proposing a code retrieval based on convolutional networks. \cite{cambronero-deep-code-search-2019} and \cite{Gu-deep-code-search:2018} paired code snippets and docstring, we matched code with questions extracted from StackOverflow.
 
 \subsection{Contributions of this work}
 
 We can summarize the shortcomings of the existing work:
-most of neural networks approaches summarize and retrieve a code, although each one has its idiosyncrasy. As far as we know, we are the first to apply convolutional neural network to code retrieval, due to good results in answer selection tasks (TTTTTT). Most of works paired code and docstring, even though docstring doesn't match user's intent. Our research are trying to address each of these in turn by proposing and analyzing the CoNCRA, \emph{a Convolutional Network Code Retrieval Approach}.
+most of neural networks approaches summarize and retrieve a code, although each one has its idiosyncrasy. As far as we know, we are the first to apply convolutional neural network to code retrieval, due to good results in answer selection tasks \citep{feng-2015, wen-joint-modeling-question-answer-2019}. Most of works paired code and docstring, even though docstring doesn't match user's intent. Our research are trying to address each of these in turn by proposing and analyzing the CoNCRA, \emph{a Convolutional Network Code Retrieval Approach}.
 
 \begin{itemize}
     \item We are proposing the CoNCRA, which is motivated
 by the good results of convolutional networks at Natutal Language Processing (NLP) tasks. 
-    \item We paired code and questions collected from StackOverflow, based on a public available dataset (YYYY).
+    \item We paired code and questions collected from StackOverflow, based on a public available dataset \cite{yao-2018}.
 
     \item We evaluated the efficacy of our approach against two other proposals.
     
@@ -205,9 +205,9 @@ According to \cite{cambronero-deep-code-search-2019}, the main goal of code retr
 
 \emph{Retrieve code snippets from a code corpus that most closely match a developer's intent, which is expressed in natural language.}
 
-The first proposals for code search used tools based on deductive-logic rules and manual feature extraction. Deductive-logic approach, e.g. boolean model, finds a code that matches exactly the keywords expressed in the query. According to ZZZ, those approaches are good at finding API's call and error's message, but it struggles to find reusable code and examples that don't have a exactly match between the code and query. Thus, there is a need to look for a semantic code search.
+The first proposals for code search used tools based on deductive-logic rules and manual feature extraction. Deductive-logic approach, e.g. boolean model, finds a code that matches exactly the keywords expressed in the query. According to \cite{yan-benchmark-code-search-information-retrieval-deep-learning:2020}, those approaches are good at finding API's call and error's message, but it struggles to find reusable code and examples that don't have a exactly match between the code and query. Thus, there is a need to look for a semantic code search.
 
-Neural networks showed good results at translation, question-answering and classifications tasks in NLP, it could infer words semantic and phrases context. Then, most of recent works adopted neural networks approach. Cambronero coined a term, \emph{neural code search}, searching for code using neural networks.
+Neural networks showed good results at translation, question-answering and classifications tasks in NLP, it could infer words semantic and phrases context. Then, most of recent works adopted neural networks approach. \cite{cambronero-deep-code-search-2019} coined a term, \emph{neural code search}, searching for code using neural networks.
 
 The marjority of works adopted the same strategy, which is to discriminate relevant code snippets from non-relevant one's based on an user's intent. In pursuance of that, code retrieval are reduced to a ranking problem where neural networks should be able to place code snippets that closely match developer's intent in the first rank. The most common strategy to do this is \emph{joint embedding}. Joint embedding maps heterogeneous data into a common vector space, where the distance between embedded input reflects the similarity between the underlying items \cite{li-joint-embedding-images-2015} (see Figure~\ref{fig:joint-embedding}).
 
@@ -229,15 +229,15 @@ In our case, $X$ can be a set of questions or code snippets and $E$ is a set of 
 
 \subsection{Word embedding}
 
-The words and terms of a question and code snippet must be encoded in a numeric vector. The way those vectors are created it's very important, as a good vector will help neural networks to learn easily a task. The most common encoder for words is the \emph{word2vec}, which embeds a word in a continuous vector based on distributional hypothesis. The distributional hypothesis says two words are similar if they appear together frequently in differents contexts (cite Bengio GGGGG). Context can be a sentence, paragraph or a document in NLP tasks. In our case, it's a question and a code snippet.
+The words and terms of a question and code snippet must be encoded in a numeric vector. The way those vectors are created it's very important, as a good vector will help neural networks to learn easily a task. The most common encoder for words is the \emph{word2vec}, which embeds a word in a continuous vector based on distributional hypothesis. The distributional hypothesis says two words are similar if they appear together frequently in differents contexts \citep{Goodfellow-et-al-2016}. Context can be a sentence, paragraph or a document in NLP tasks. In our case, it's a question and a code snippet.
 
-Word2vec has two strategies: continuous-bag-of-words (CBoW) and skip-gram. The main difference between them is that CBoW predicts a target word given a context words and skip-gram predicts the context words given a single word. According to Mikolov BBBBB, CBoW showed good results at syntactically tasks, e.g., finding a superlative of a word or identify an adverb, while skip-gram presented a good performance at semantic tasks, e.g., finding the capital of a state or grouping feminine and masculine words. 
+Word2vec has two strategies: continuous-bag-of-words (CBoW) and skip-gram. The main difference between them is that CBoW predicts a target word given a context words and skip-gram predicts the context words given a single word. According to \cite{mikolov2013distributed}, CBoW showed good results at syntactically tasks, e.g., finding a superlative of a word or identify an adverb, while skip-gram presented a good performance at semantic tasks, e.g., finding the capital of a state or grouping feminine and masculine words. 
 
 In our work, we opted for skip-gram as a semantic trait is preferable to a sintact one in our task. Semantic trait can help the neural network to discriminate conditional clauses (e.g. \emph{if}, \emph{elsif}) and loop iteration (e.g. \emph{for}, \emph{while}), for an example. Figure~\ref{fig:tsne-code-snippet-python} shows an application of word2vec in a Python related corpus. If we look carefully, we can see the similarities between \emph{file}, \emph{write} and \emph{open}, as \emph{set}, \emph{list} and \emph{dict} based on the distance of each one.
 
 \begin{figure}[H]
 \includegraphics[width=0.45\textwidth]{figuras/code_tsne.png}
-\caption{2D illustration of the continuous vectors of the 66 most common words contained in vocabulary $V$. The vocabulary $V$ contains words from questions and code snippets related to Python. The illustration was generated by t-SNE, which allows 2D visualization from high-dimensional data. We applied word2vec with skip-gram and set the parameter window to $5$.}
+\caption{2D picture of the continuous vectors of the 66 most common words contained in vocabulary $V$. The vocabulary $V$ contains words from questions and code snippets related to Python. The illustration was generated by t-SNE, which allows 2D visualization from high-dimensional data. We applied word2vec with skip-gram and set the parameter window to $5$.}
 
 \label{fig:tsne-code-snippet-python}
 \end{figure}
@@ -246,11 +246,10 @@ In our work, we opted for skip-gram as a semantic trait is preferable to a sinta
 
 We can combine the word embeddings to obtain a sentence embedding. Our proposal is to combine word embeddings by using a convolutional network. Convolutional networks showed good results at answer selection task in NLP, where given a question and a set of answers, the model should rank the best answers in the firsts positions. Although, convolutional networks prioritizes local interactions (e.g. words nearby) and can't capture long range dependencies (e.g. distant words in a sentence), we think it does not represent a big problem to code retrieval, as most of questions and code snippets are short in length.
 
-Given an sentence $\bm{x} = \{ \bm{x}(0), \bm{x}(1), . . ., \bm{x}(n - 1) \}$, such that $\bm{x}(i) \in \mathbb{R}^{d}$ is a continuous vector that represents the $i^{th}$ word of the sentence. The convolutional network combines the elements of vector $\bm{x}$ applying 3 basic operations:
+Given an sentence $\bm{x} = \{ \bm{x}(0), \bm{x}(1), . . ., \bm{x}(n - 1) \}$, such that $\bm{x}(i) \in \mathbb{R}^{d}$ is a continuous vector that represents the $i^{th}$ word of the sentence. The convolutional network combines the elements of vector $\bm{x}$ applying 2 basic operations:
 
 \begin{itemize}
     \item Convolution operation
-    \item Concatenation
     \item \textit{Maxpool}
 \end{itemize}
 
@@ -260,7 +259,7 @@ A convolution operation uses a filter $\bm{F}  = [\bm{F}(0),· · ·, \bm{F}(m -
     \bm{c}(i) = tanh \left[\left(\sum_{j=0}^{m - 1} \bm{x}(i + j)^{T}\bm{F}(j)\right) + b\right]
 \end{equation}
 
-In the equation~\ref{eq:calc_convolution_ci}, $b$ is a \textit{bias} e $\bm{F}$ and $b$ are weight's filter, which will be learned by convolutional network during a training phase. The convolution operation applies ther filter $\bm{F}$ to every possible window of words using the same weight and, as a result, we have a feature map.
+In the equation~\ref{eq:calc_convolution_ci}, $\bm{F}$ and $b$ are learnable weights and bias, respectively. The convolution operation slides the filter $\bm{F}$ across the height of input $\bm{x}$ and computes the dot product between the entries of the filter and the input \cite{karpathy-course-cnn-2016}. The operation returns a feature map $\bm{c}$.
 
 \begin{equation}
     \bm{c} = \{ \bm{c}(0), \bm{c}(1), . . ., \bm{c}(n - m) \} 
@@ -276,8 +275,8 @@ The max pooling helps the convolutional network to be translation invariant. Reg
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.45\textwidth]{figuras/cnn-steps-word-embedding.pdf}
-    \caption{TO-DO: Fix image according to new equation. Ilustração das 3 operações realizadas pela nossa arquitetura CNN para obter o vetor de representação final $\bm{c'}_{\bm{m}}$. Neste exemplo, utilizamos 3 filtros $\bm{F} \in \mathbb{R}^{m X d X f}$ com diferentes janelas $m$, onde $m = \{2, 3, 4\}$. Cada filtro tem tamanho $f = 2$. Temos um total de 6 filtros ao final. Cada filtro é aplicado a sentença $\bm{x} \in \mathbb{R}^{n X d}$, onde $n = 6$ e $d = 5$. O primeiro passo é a obtenção do vetor $\bm{c}$ de características. Posteriormente, é realização a operação de concatenação, no qual é obtido o vetor $\bm{c}_{\bm{m}}$, conforme descrito na operação~\ref{eq:concatenacao-cnn-cm}. Ao final, a operação \textit{max} é aplicada no eixo $0$, obtendo o vetor de representação final $\bm{c'}_{m}$. Este vetor $\bm{c'}_{m}$ será o nosso vetor de representação das nossas sentenças, i.e., o vetor de representação das questões e trechos de código-fonte. Figura adaptada do artigo de \cite{zhang-guide-convolutional-cnn-embedding-ilustration:2015}}
+    \includegraphics[width=0.45\textwidth]{figuras/cnn-steps-word-embedding-article.pdf}
+    \caption{Schematic drawing of our Convolutional Neural Network (CNN) operations. Our example shows 4 filters $\bm{F} \in \mathbb{R}^{m X d X f}$ with window size $m = 2$. We slide each filter across the height of the input $\bm{x} \in \mathbb{R}^{n X d}$, where $n = 6$ and $d = 5$, and computes the dot product between the entries of the filter and the input \cite{karpathy-course-cnn-2016}. It returns a feature map $\bm{c}$. In the end, a max pooling layer resizes every feature map spatially, obtaining the final vector $\bm{o}$. We use the vector $\bm{o}$ as our question and code snippet embedding. Adapted from \cite{zhang-guide-convolutional-cnn-embedding-ilustration:2015}.}
     \label{fig:cnn-steps-word-embedding}
 \end{figure}
 
@@ -299,11 +298,11 @@ For the similarity function $h_{\theta}$, we used \emph{cosine}, such that $h_{\
 
 \section{Experiments}
 
-We evaluated our proposed approach (CoNCRA) on StaQC dataset, a systematically mined question code dataset from StackOverflow (citar Yang...). The main difference of StaQC to other datasets (citar referencias TTT) is it is composed by ''how-to-do-it'' questions, as the answers to those type of questions are more straight. StaQC contains SQL and Python question and code pairs, but, in our preliminary experiment, we used the python ones only. Table~\ref{table:summary-training-data-yao-staqc} gives an overview about StaQC dataset.
+We evaluated our proposed approach (CoNCRA) on StaQC dataset, a systematically mined question code dataset from StackOverflow \cite{yao-2018}. The main difference of StaQC to other datasets is it is composed by ''how-to-do-it'' questions, as the answers to those type of questions are more straight. StaQC contains SQL and Python question and code pairs, but, in our preliminary experiment, we used the python ones only. Table~\ref{table:summary-training-data-yao-staqc} gives an overview about StaQC dataset.
 
 \begin{table}[h]
 \centering
-\begin{tabular}{ p{16em} P{10em} P{10em} }
+\begin{tabular}{ p{5cm} c c }
 \hline
   & \multicolumn{2}{c}{\textbf{Question}}\\
 \hline
@@ -344,9 +343,9 @@ $N_{3}$: Manually annotated code snippets & $2.169$ & $2.056$  \\
 \label{table:training-sample-division}
 \end{table}
 
-We trained our model on sample $N2$ (see Table~\ref{table:summary-training-data-yao-staqc} and Table~\ref{table:training-sample-division}), because 27\% of the questions contains more than one answer annotated, leading to more variance in our training dataset. The training and evaluation follows the Iyer XXXX procedure, where the model is evaluated on an manually annotated dataset each epoch based on mean reciprocal rank (MRR). The MRR tells if your model ranked the annotated answer in higher positions or not, higher values indicates the accepted answers were ranked in the firts positions.
+We trained our model on sample $N2$ (see Table~\ref{table:summary-training-data-yao-staqc} and Table~\ref{table:training-sample-division}), because 27\% of the questions contains more than one answer annotated, leading to more variance in our training dataset. The training and evaluation follows the \cite{iyer-etal-2016-summarizing} procedure, where the model is evaluated on an manually annotated dataset each epoch based on mean reciprocal rank (MRR). The MRR tells if your model ranked the annotated answer in higher positions or not, higher values indicates the accepted answers were ranked in the firts positions.
 
-For the training phase, we used 70\% of $N2$ sample for training and 30\% for validation. The models runs during 500 epochs and stops early if the training loss ($J$) is less than $0.0001$ or the validation loss doesn't improve after 25 consecutive epoches. We choose the best model of the training phase according to MRR and run it 20 times in the $N3$ sample for the final evaluation (see Table~\ref{table:training-sample-division}). The final result is the average of the MRR for each pair $<q_{i}, c_{i}^{+}>$ of $N3$ and other 49 distractors $c_{j}$, selected randomly from the training sample, such that $c_{i}^{+} \neq c_{j}$.
+For the training phase, we used 70\% of $N2$ sample for training and 30\% for validation. We run the models for 500 epochs and stops early if the training loss ($J$) is less than $0.0001$ or the validation loss doesn't improve after 25 consecutive epoches. We choose the best model of the training phase according to MRR and run it 20 times in the $N3$ sample for the final evaluation (see Table~\ref{table:training-sample-division}). The final result is the average of the MRR for each pair $<q_{i}, c_{i}^{+}>$ of $N3$ and other 49 distractors $c_{j}$, selected randomly from the training sample, such that $c_{i}^{+} \neq c_{j}$.
 
  We provided the source code for our preliminary experiments in the following repository: \url{https://github.com/mrezende/concra}. The repository contains our proposed model, the baseline ones, training and evaluation source code. We also provided the original and pre-processed dataset. The source code is written in Python, version 3.6.9, and we used the libraries Keras (version 2.2.4-tf) and Tensorflow (1.15.2). The preliminary experiments were all conducted in the Colab, a Google platform that allows to run arbitrary python code from the browser and it's specially suited for machine learning and data analysis research cita Google colab YYY.
 
@@ -410,7 +409,7 @@ All the models used the joint embedding technique described in the Section~\ref{
  
 \hline
 \end{tabular}
-\caption{Resultado do modelo CNN em comparação com as outras arquiteturas unif e Embedding. MRR refere-se a média do resultado do Mean Reciprocal Rank na amostra EVAL. TOP1 refere-se a frequência da ocorrência da resposta anotada como correta na primeira posição em comparação com outros 49 distratores. Nas linhas A1 e B1, \emph{m} refere-se ao hiper-parâmetro margem utilizada na função de perda \emph{hinge}. F indica a quantidade de filtros convolucionais utilizados durante o treinamento das redes convolucionais. NL é o acrônimo de normalização em lote. As arquiteturas CNN utilizaram margem $m = 0.05$ e o tamanho da janela do filtro (kernel) $k = 2$.}
+\caption{The experimental results of EVAL sample for Embedding, Unif and our two CNN variations: CNN and Shared CNN. \emph{m} refers to margin loss of the hinge loss function (lines A1 and B1). \emph{F} indicates the quantity of filters. BN its an acronym of Batch Normalization. Our CNN architecture used a margin loss $m = 0.05$ and a window size $2$.}
 \label{table:resultados}
 \end{table*}
 
@@ -418,14 +417,14 @@ According to Table~\ref{table:resultados}, an increase in the number of filters 
 We tried different margin loss (see Section~\ref{fig:joint-embedding}), CNN got the best results with  $0.05$, while Unif and Embedding got better results with $0.2$ and $0.1$ respectively. 
 
 
-We verified that shared weights models (lines D e F) got better results than independently weights ones (lines C e E). One reason is that the optimizer of independently weights architecture has to learn the double of parameters, increasing the learning difficulty (citar Feng TTTT). We also tried a batch normalization technique to avoid overfitting and help our models to learn quickly and more stable, but only CNN and Shared CNN got better results. For Unif and Embedding, it didn't improve the performance at all. 
+We verified that shared weights models (lines D e F) got better results than independently weights ones (lines C e E). One reason is that the optimizer of independently weights architecture has to learn the double of parameters, increasing the learning difficulty \cite{feng-2015}. We also tried a batch normalization technique to avoid overfitting and help our models to learn quickly and more stable, but only CNN and Shared CNN got better results. For Unif and Embedding, it didn't improve the performance at all. 
 
 The Figure~\ref{fig:histogram-mrr} illustrates the MRR (Mean Reciprocal Rank), showing the first position of the annotated code snippet during the final evaluation.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.45\textwidth]{figuras/histogram.pdf}
-    \caption{Illustration of the firsts positions observed for the annotated code snippet during the final evaluation. The labels \emph{shared-cnn-with-bn}, \emph{unif} and \emph{embedding} refer to lines F3, A1 e B1, respectively, in the Table~\ref{table:resultados}.}
+    \caption{Histogram of the firsts positions observed for the annotated code snippet during the final evaluation. The labels \emph{shared-cnn-with-bn}, \emph{unif} and \emph{embedding} refer to lines F3, A1 e B1, respectively, in the Table~\ref{table:resultados}.}
     \label{fig:histogram-mrr}
 \end{figure}
 
@@ -434,13 +433,13 @@ Both CNN and Unif ranked the code snippets among the first 3 positions in 75\% o
 
 \subsection{Threats to validity}
 
-We trained the models on StaQC dataset, a systematically mined question code dataset. The authors used a neural network to annotate the code snippet and trained it on a manually dataset. In our case, we trained the models on the automatically annotated corpus and evaluated on the manually ones. To mitigate the bias, we adopted the Iyer YYYY procedure for training and evaluation.
+We trained the models on StaQC dataset, a systematically mined question code dataset. The authors used a neural network to annotate the code snippet and trained it on a manually dataset. In our case, we trained the models on the automatically annotated corpus and evaluated on the manually ones. To mitigate the bias, we adopted the \cite{iyer-etal-2016-summarizing} procedure for training and evaluation.
 
 \section{Conclusion}
 
-According to results, our proposed approach is a prominent techique. We got results comparable to Unif, actual state of art, where we could achieve a MRR score 5\% higher on average. Our model ranked the most relevant code snippet among the first 3 (three) positions in 78\% of cases. We achieved a TOP-1 accuracy of 60\%, while the others techniques got 50\%. 
+According to results, our proposed approach is a prominent techique. Our model achieved a MRR score 5\% higher on average than Unif, actual state of art. We could rank the most relevant code snippet among the first 3 (three) positions in 78\% of cases. Our techique achieved a TOP-1 accuracy of 60\%, while the others techniques got 50\%. 
 
-Although the results seems good, it's a preliminary experiment, a further investigation is needed to see if our model is invariant to others datasets. We also would like to try a transfer learning, e.g., check if a model trained on a StackOverflow dataset (curated corpus) is able to find relevant code snippets in a Github corpus (non-curated one). Our approach is based on a NLP technique proposed by Feng ...., we think future works may use transformers and autoencoders, as those techniques showed good results in many NLP tasks. 
+Although the results seems good, it's a preliminary experiment, a further investigation is needed to see if our model is invariant to others datasets. We also would like to try a transfer learning, e.g., check if a model trained on a StackOverflow dataset (curated corpus) is able to find relevant code snippets in a Github corpus (non-curated one). Our approach is based on a NLP technique proposed by \cite{feng-2015}, we think future works may use transformers and autoencoders, as those techniques showed good results in many NLP tasks. 
 
 %%
 %% The next two lines define the bibliography style to be used, and
