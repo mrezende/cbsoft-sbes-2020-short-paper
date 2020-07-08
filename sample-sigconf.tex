@@ -75,7 +75,7 @@ SOFTWARE ENGINEERING (SBES 2020),
 %%
 %% The "title" command has an optional parameter,
 %% allowing the author to define a "short title" to be used in page headers.
-\title{CoNCRA: A Convolutional Network Code Retrieval Approach}
+\title{CoNCRA: A Convolutional Neural Networks Code Retrieval Approach}
 
 %%
 %% The "author" command and its associated commands are used to define
@@ -83,24 +83,24 @@ SOFTWARE ENGINEERING (SBES 2020),
 %% Of note is the shared affiliation of the first two authors, and the
 %% "authornote" and "authornotemark" commands
 %% used to denote shared contribution to the research.
-\author{Marcelo de Rezende Martins}
-\email{rezende.martins@gmail.com}
-\affiliation{%
-  \institution{IPT – Institute for Technological Research}
-  \city{Sao Paulo}
-  \state{Sao Paulo}
-  \country{Brazil}
-}
+%\author{Marcelo de Rezende Martins}
+%\email{rezende.martins@gmail.com}
+%\affiliation{%
+% \institution{IPT – Institute for Technological Research}
+%  \city{Sao Paulo}
+%  \state{Sao Paulo}
+%  \country{Brazil}
+%}
 
 
-\author{Marco Aurélio Gerosa}
-\email{marco.gerosa@nau.edu}
-\affiliation{%
-  \institution{Northern Arizona University (NAU)}
-  \city{Flagstaff}
-  \state{Arizona}
-  \country{United States}
-}
+%\author{Marco Aurélio Gerosa}
+%\email{marco.gerosa@nau.edu}
+%\affiliation{%
+%  \institution{Northern Arizona University (NAU)}
+%  \city{Flagstaff}
+%  \state{Arizona}
+%  \country{United States}
+%}
 
 %%
 %% By default, the full list of authors will be used in the page
@@ -114,7 +114,7 @@ SOFTWARE ENGINEERING (SBES 2020),
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-   Code search is a prevalent task in software development process. According to \cite{what-developers-search-for-on-the-web:xia:2017}, developers spend 15\% of their time searching for API's examples, what a code does and how to fix a bug. A research at Google showed that developers search for code 12 times a day, checking 2 and 3 results per search session. Most of the time, they are looking for code examples \citep{sadowski-how-developers-search-for-code-case-study:2015}. Thus, improve the way developers find a code its an important productivity tool. In our work, we present a novel approach to retrieve code semantically using a convolutional neural network. Our preliminary results showed a prominent technique which improved the state of art \citep{cambronero-deep-code-search-2019} by 5\% on the average and it could retrieve the most relevant code snippets for a natural language query in the first 3 (three) positions by 80\% of the time. 
+   Code search is a prevalent task in software development process. According to \cite{what-developers-search-for-on-the-web:xia:2017}, developers spend 15\% of their time searching for API's examples, what a code does and how to fix a bug. A research at Google showed that developers search for code 12 times a day, checking 2 and 3 results per search session. Most of the time, they are looking for code examples \citep{sadowski-how-developers-search-for-code-case-study:2015}. Thus, improve the way developers find a code its an important productivity tool. In our work, we present a novel approach to retrieve code semantically using a convolutional neural network. Our preliminary results showed a prominent technique which improved the state-of-the-art \citep{cambronero-deep-code-search-2019} by 5\% on the average and it could retrieve the most relevant code snippets for a natural language query in the first 3 (three) positions by 80\% of the time. 
 \end{abstract}
 
 %%
@@ -168,27 +168,26 @@ SOFTWARE ENGINEERING (SBES 2020),
 
 \section{Introduction}
 
-The advent of open source code and open question answering sites related to programming contributed to improve the way developers code today. Nowadays, code search is a daily routine task at software development process. Developers spend 15\% of their time searching for how a code works, a bug fix and API's usage \cite{what-developers-search-for-on-the-web:xia:2017}. According to \cite{sadowski-how-developers-search-for-code-case-study:2015}, developers at Google search for code 12 times a day, clicking on 2 to 3 results by average per search session. Most of them are looking for code examples. Thus, improve the way developers find a code it's an important productivity tool.  
+The advent of open source code and open-domain question answering sites related to programming contributed to improve the way developers code today. Nowadays, code search is a daily routine task at software development process. Developers spend 15\% of their time searching for how a code works, a bug fix and API's usage \cite{what-developers-search-for-on-the-web:xia:2017}. According to \cite{sadowski-how-developers-search-for-code-case-study:2015}, developers at Google search for code 12 times a day, clicking on 2 to 3 results by average per search session. Most of them are looking for code examples. Thus, improve the way developers find a code it's an important productivity tool.  
 
-Most of developers use general purpose search engine (GPSE) to look for code (e.g. Google). GPSE uses page rank and other indexes tactics that are not optimized for searching code. Then, GPSE are not capable of finding a code semantically, unless a code has a accompanying description. According to \cite{masudur-developers-use-google-code-retrieval:2018}, developers spend more time, visit more pages and change a query more times when they are searching for code compared to non-code related search.
+Most of developers use general purpose search engine (GPSE) to look for code (e.g. Google). GPSE uses page rank and other indexes tactics that are not optimized for searching code. Then, GPSE are not capable of finding a code semantically, unless a code has a accompanying description. According to \cite{masudur-developers-use-google-code-retrieval:2018}, developers spend more time, visit more pages and change a query more often when they are doing a code-related search.
 
-GitHub, a popular open source code repository, have tried to build a semantic code search. They extracted millions of lines of code from his repositories and matched each code with a dosctring. The final results weren't satisfactory, the tool could find a relevant code only if the query matches the docstring description \citep{husain-github-semantic-search-code-2019}. According to \cite{cambronero-deep-code-search-2019}, a user's intent were better matched with questions extracted from open question-answering sites related to programming, e.g., StackOverflow. Those sites permit users to ask a question and check the best answer for him. Other users can vote for the most helpful answer and mark wrong or not helpful ones. Those collective actions help to curate and organize information, creating a valuable repository.
+GitHub, a popular souce code hosting platform, have tried to build a semantic code search. They extracted millions of lines of code from its repositories and matched each code to a dosctring. The final results weren't satisfactory, the tool could find a relevant code only if we provide a query that matches the docstring description \citep{husain-github-semantic-search-code-2019}. According to \cite{cambronero-deep-code-search-2019}, a user's intent were better matched to questions collected from open-domain question-answering sites related to programming, e.g., StackOverflow. Those sites allow users to ask a question and approve the best answer for it. Other users can vote for the most helpful answer and mark the wrong or not helpful ones. Those collective actions help to curate and organize information, creating an important source of data.
 
-There are a lot of works about semantic code search \citep{Allamanis:2018:SML}. The first ones were based on deductive-logic rules and manual feature extraction from code. The recent success of artificial neural networks, due to Big Data and computational resources available, shifted works to machine learning based approach. \cite{cambronero-deep-code-search-2019} also coined a name, neural code search, i.e., code search based on neural networks.
+Code search firts works were based on deductive-logic rules and manuallly extracted features \cite{Allamanis:2018:SML}. The recent success of artificial neural networks, due to Big Data and computational resources available, shifted recent works to a machine learning based approach. \cite{cambronero-deep-code-search-2019} also coined a name, neural code search, i.e., code search based on neural networks.
 
-Most of works applied neural networks to summarize and retrieve code snippets. Code summarization and retrieval are two different activities, each one with it's metric and trait. We are proposing an novel approach for code retrieval. Different from other works, which presented an neural network with attention mechanism and a recurrent neural network \cite{cambronero-deep-code-search-2019, Gu-deep-code-search:2018}, we are proposing a code retrieval based on convolutional networks. \cite{cambronero-deep-code-search-2019} and \cite{Gu-deep-code-search:2018} paired code snippets and docstring, we matched code with questions extracted from StackOverflow.
+Recent works applied neural networks to summarize and retrieve code snippets. Code summarization and retrieval are two different tasks, each one has its metrics and traits. In our case, we are proposing a novel approach just for code retrieval. Our approach is based on Convolutional Neural Networks (CNN), while \cite{cambronero-deep-code-search-2019} proposed a neural network with attention mechanism and \cite{Gu-deep-code-search:2018} presented a recurrent neural network. \cite{cambronero-deep-code-search-2019} and \cite{Gu-deep-code-search:2018} paired code snippets and docstring, we matched code to questions collected from StackOverflow.
 
 \subsection{Contributions of this work}
 
-We can summarize the shortcomings of the existing work:
-most of neural networks approaches summarize and retrieve a code, although each one has its idiosyncrasy. As far as we know, we are the first to apply convolutional neural network to code retrieval, due to good results in answer selection tasks \citep{feng-2015, wen-joint-modeling-question-answer-2019}. Most of works paired code and docstring, even though docstring doesn't match user's intent. Our research are trying to address each of these in turn by proposing and analyzing the CoNCRA, \emph{a Convolutional Network Code Retrieval Approach}.
+We can summarize the shortcomings of the existing work: most of neural networks approaches summarize and retrieve a code, although each one has its idiosyncrasy. As far as we know, we are the first to apply convolutional neural network to search for code, due to good results in answer selection tasks \citep{feng-2015, wen-joint-modeling-question-answer-2019}. Recent works paired code and docstring, even though docstring doesn't match user's intent. Our research are trying to address each of these in turn by proposing and analyzing the CoNCRA, \emph{a Convolutional Neural Network Code Retrieval Approach}.
 
 \begin{itemize}
     \item We are proposing the CoNCRA, which is motivated
-by the good results of convolutional networks at Natutal Language Processing (NLP) tasks. 
-    \item We paired code and questions collected from StackOverflow, based on a public available dataset \cite{yao-2018}.
+by the good results of convolutional neural networks at Natutal Language Processing (NLP) tasks. 
+    \item We paired code and questions collected from StackOverflow. We used a new public available dataset created by \cite{yao-2018}.
 
-    \item We evaluated the efficacy of our approach against two other proposals.
+    \item We evaluated the efficacy of our approach comparing to other methods: a baseline one and the actual state-of-the-art \cite{cambronero-deep-code-search-2019}.
     
 \end{itemize}
 
@@ -347,7 +346,7 @@ We trained our model on sample $N2$ (see Table~\ref{table:summary-training-data-
 
 For the training phase, we used 70\% of $N2$ sample for training and 30\% for validation. We run the models for 500 epochs and stops early if the training loss ($J$) is less than $0.0001$ or the validation loss doesn't improve after 25 consecutive epoches. We choose the best model of the training phase according to MRR and run it 20 times in the $N3$ sample for the final evaluation (see Table~\ref{table:training-sample-division}). The final result is the average of the MRR for each pair $<q_{i}, c_{i}^{+}>$ of $N3$ and other 49 distractors $c_{j}$, selected randomly from the training sample, such that $c_{i}^{+} \neq c_{j}$.
 
- We provided the source code for our preliminary experiments in the following repository: \url{https://github.com/mrezende/concra}. The repository contains our proposed model, the baseline ones, training and evaluation source code. We also provided the original and pre-processed dataset. The source code is written in Python, version 3.6.9, and we used the libraries Keras (version 2.2.4-tf) and Tensorflow (1.15.2). The preliminary experiments were all conducted in the Colab, a Google platform that allows to run arbitrary python code from the browser and it's specially suited for machine learning and data analysis research cita Google colab YYY.
+ We provided the source code for our preliminary experiments in the following repository: \url{https://github.com/AUTHOR/PROJECT_NAME}. The repository contains our proposed model, the baseline ones, training and evaluation source code. We also provided the original and pre-processed dataset. The source code is written in Python, version 3.6.9, and we used the libraries Keras (version 2.2.4-tf) and Tensorflow (1.15.2). The preliminary experiments were all conducted in the Colab, a Google platform that allows to run arbitrary python code from the browser and it's specially suited for machine learning and data analysis research \cite{colab-2019}.
 
 \subsection{Results}
 
@@ -359,7 +358,7 @@ For the final evaluation, we compared the following models:
     \item \emph{Unif}: it's a architecture proposed by \cite{cambronero-deep-code-search-2019}. They used two distinct layers for the question and code snippet embedding. They applied an average pooling layer to word embedding in order to learn the question embeddings. For the code snippet embedding, they used an attention mechanism, which applies a weighted average to each word embedding, ''giving an attention'' to the most relevant word of the sentence.
 \end{itemize}
 
-All the models used the joint embedding technique described in the Section~\ref{sec:joint-embedding}. Table~\ref{table:resultados} shows the final results we got after 20 runs on the $N3$ sample. Shared CNN with 4000 filters got the best results (lines D3 e F3). Our proposed architecture achieved a MRR score 5\% higher on average than the best result obtained by Unif (linha B1), actual state of art. Our MRR result is 11\% higher than the baseline model (linha A1). 
+All the models used the joint embedding technique described in the Section~\ref{sec:joint-embedding}. Table~\ref{table:resultados} shows the final results we got after 20 runs on the $N3$ sample. Shared CNN with 4000 filters got the best results (lines D3 e F3). Our proposed architecture achieved a MRR score 5\% higher on average than the best result obtained by Unif (linha B1), actual state-of-the-art. Our MRR result is 11\% higher than the baseline model (linha A1). 
 
 \begin{table*}[t]
 \centering
@@ -437,7 +436,7 @@ We trained the models on StaQC dataset, a systematically mined question code dat
 
 \section{Conclusion}
 
-According to results, our proposed approach is a prominent techique. Our model achieved a MRR score 5\% higher on average than Unif, actual state of art. We could rank the most relevant code snippet among the first 3 (three) positions in 78\% of cases. Our techique achieved a TOP-1 accuracy of 60\%, while the others techniques got 50\%. 
+According to results, our proposed approach is a prominent techique. Our model achieved a MRR score 5\% higher on average than Unif, actual state-of-the-art. We could rank the most relevant code snippet among the first 3 (three) positions in 78\% of cases. Our techique achieved a TOP-1 accuracy of 60\%, while the others techniques got 50\%. 
 
 Although the results seems good, it's a preliminary experiment, a further investigation is needed to see if our model is invariant to others datasets. We also would like to try a transfer learning, e.g., check if a model trained on a StackOverflow dataset (curated corpus) is able to find relevant code snippets in a Github corpus (non-curated one). Our approach is based on a NLP technique proposed by \cite{feng-2015}, we think future works may use transformers and autoencoders, as those techniques showed good results in many NLP tasks. 
 
