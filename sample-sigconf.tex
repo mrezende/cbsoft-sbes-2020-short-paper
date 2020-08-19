@@ -169,7 +169,15 @@ GitHub, a popular source code hosting platform, has attempted to build a semanti
 
 First Code search studies were based on deductive-logic rules and manually extracted features \cite{Allamanis:2018:SML}. The recent success of artificial neural networks has shifted recent works to a machine learning-based approach. \citet{cambronero-deep-code-search-2019} coined a name, neural code search, i.e., code search based on neural networks.
 
-Recent works applied neural networks to summarize and retrieve code snippets. We propose a novel approach focused on code retrieval. While \citet{cambronero-deep-code-search-2019} proposed a neural network with attention mechanism and \citet{Gu-deep-code-search:2018} presented a recurrent neural network, our approach is based on Convolutional Neural Networks (CNN). Additionally, we matched code to questions collected from Stack Overflow. For the best of our knowledge, convolutional neural networks have not yet been used to search for code, but have achieved good results in answer selection tasks \citep{feng-2015, wen-joint-modeling-question-answer-2019}. In summary, in this paper, we propose CoNCRA, which is motivated by the good results of convolutional neural networks at Natural Language Processing (NLP) tasks. We pair code and questions collected from Stack Overflow, and we evaluate the efficacy of our approach comparing to other methods.
+Recent works applied neural networks to summarize and retrieve code snippets. We propose a novel approach focused on code retrieval. While \citet{cambronero-deep-code-search-2019} proposed a neural network with attention mechanism and \citet{Gu-deep-code-search:2018} presented a recurrent neural network, our approach is based on Convolutional Neural Networks (CNN).  CNN prioritizes local interactions (words nearby) and it's translation invariant, which we think are important traits for our task, as question and code snippets are shorter in length and code snippets are translation invariant, it follows stricter rules than natural language.
+
+Additionally, we matched code to questions collected from Stack Overflow. For the best of our knowledge, convolutional neural networks have not yet been used to search for code, but have achieved good results in answer selection tasks \citep{feng-2015, wen-joint-modeling-question-answer-2019}. In our study, we tried to answer the following questions:
+
+\begin{itemize}
+    \item What is the efficacy of the CONCRA technique? 
+    \item How does it compare to the baseline and SOTA methods?
+\end{itemize}
+
 
 \section{Background}
 
@@ -328,7 +336,7 @@ We trained our model on sample $N2$ (see Table~\ref{table:summary-training-data-
 
 For the training phase, we split 70\% of $N2$ sample for training and 30\% for validation. We run the models for 500 epochs and stop early if the training loss ($J$) is less than $0.0001$ or the validation loss does not improve after 25 consecutive epochs. For the final evaluation, we choose the best model of the training phase according to MRR and run it for 20 iterations in the $N3$ sample (see Table~\ref{table:training-sample-division}). The final result is the average of the MRR for each pair $<q_{i}, c_{i}^{+}>$ of $N3$ and other 49 distractors $c_{j}$, which were selected randomly from the training sample, such that $c_{i}^{+} \neq c_{j}$.
 
-We provide the source code for our preliminary experiments in the following repository (omitted for peer review): \url{https://github.com/AUTHOR/PROJECT_NAME}. The repository contains our proposed model, the baseline ones, training, and evaluation source code. We also provide the original and pre-processed dataset. The source code is written in Python, version 3.6.9, and we used the libraries Keras (version 2.2.4-tf) and TensorFlow (1.15.2). The tests were all conducted in the Colab platform\footnote{\url{https://colab.research.google.com/}}.
+We provide the source code for our preliminary experiments in the following repository (omitted for peer review): \url{https://github.com/mrezende/concra}. The repository contains our proposed model, the baseline ones, training, and evaluation source code. We also provide the original and pre-processed dataset. The source code is written in Python, version 3.6.9, and we used the libraries Keras (version 2.2.4-tf) and TensorFlow (1.15.2). The tests were all conducted in the Colab platform\footnote{\url{https://colab.research.google.com/}}.
 
 \subsection{Results}
 
