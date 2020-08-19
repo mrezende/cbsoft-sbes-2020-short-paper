@@ -421,7 +421,7 @@ We summarized the difference between our work and related work in Table~\ref{tab
 
 Previous work \cite{Gu-deep-code-search:2018, Sachdev-neural-code-search:2018, cambronero-deep-code-search-2019} (from row (D) to (F)) that used GitHub's data extracted the methods from the source code and matched them to docstring descriptions. Work that used Stack Overflow  \cite{Allamanis-bimodal-source-code-natural-language:2015, Chen-bi-variational-autoencoder:2018, iyer-etal-2016-summarizing} (from row (A) to (C)) paired question title to the code snippet of the accepted answer. For the search corpus, some works \cite{Gu-deep-code-search:2018, Sachdev-neural-code-search:2018, cambronero-deep-code-search-2019} (from row (D) to (F)) adopted a GitHub corpus with milions of pieces of code, while others \cite{Allamanis-bimodal-source-code-natural-language:2015, iyer-etal-2016-summarizing, Chen-bi-variational-autoencoder:2018} (from row (A) to (C)) retrieved code snippet from a small sample of 50 code snippets randomly selected. The studies (from row (A) to (G)) are commonly evaluated using questions collected from Stack Overflow. 
 
-Although, our .....
+Although, our architecture are more complex (require more parameters and time to train) than \cite{cambronero-deep-code-search-2019} (row F) architecture, we think it's not a overhead, as we can train our model offline. We matched question title to code snippets collected from Stack Overflow following \cite{Allamanis-bimodal-source-code-natural-language:2015} (row A and B) work. 
 
 
 \begin{table}[t]
