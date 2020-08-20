@@ -169,7 +169,7 @@ GitHub, a popular source code hosting platform, has attempted to build a semanti
 
 First Code search studies were based on deductive-logic rules and manually extracted features \cite{Allamanis:2018:SML}. The recent success of artificial neural networks has shifted recent works to a machine learning-based approach. \citet{cambronero-deep-code-search-2019} coined a name, neural code search, i.e., code search based on neural networks.
 
-Recent works applied neural networks to summarize and retrieve code snippets. We propose a novel approach focused on code retrieval. While \citet{cambronero-deep-code-search-2019} proposed a neural network with attention mechanism and \citet{Gu-deep-code-search:2018} presented a recurrent neural network, our approach is based on Convolutional Neural Networks (CNN).  CNN prioritizes local interactions (words nearby) and it's translation invariant, which we think are important traits for our task, as question and code snippets are shorter in length and code snippets are translation invariant, it follows stricter rules than natural language.
+Recent works applied neural networks to summarize and retrieve code snippets. We propose a novel approach focused on code retrieval. While \citet{cambronero-deep-code-search-2019} proposed a neural network with attention mechanism and \citet{Gu-deep-code-search:2018} presented a recurrent neural network, our approach is based on Convolutional Neural Networks (CNN).  CNN prioritizes local interactions (words nearby) and it's translation invariant, which we think are important traits for our task. The questions and code snippets are shorter in length and code snippets follow stricter rules than natural language, a small change in the token's order and a code is not parseable. 
 
 Additionally, we matched code to questions collected from Stack Overflow. For the best of our knowledge, convolutional neural networks have not yet been used to search for code, but have achieved good results in answer selection tasks \citep{feng-2015, wen-joint-modeling-question-answer-2019}. In our study, we tried to answer the following questions:
 
@@ -287,7 +287,18 @@ For the similarity function $h_{\theta}$, we used \emph{cosine}, such that $h_{\
 
 \section{Experiments}
 
-We evaluated our proposed approach (CoNCRA) on the StaQC dataset, a systematically mined question-code dataset from Stack Overflow \cite{yao-2018}. The main difference of StaQC to other datasets is that it is composed of ''how-to-do-it'' questions, as most of the answers to those types of questions are straight. StaQC contains SQL and Python questions, but, in our preliminary experiments, we used Python questions only. Table~\ref{table:summary-training-data-yao-staqc} shows a summary of the StaQC dataset.
+In order to verify the efficacy of our approach and how it compares to a baseline and SOTA methods, we trained and evaluated all models on the same environment, following \citet{yao-2018} and \citet{ iyer-etal-2016-summarizing} experiment protocol. We compared the following models:
+
+\begin{itemize}
+    \item \emph{CoNCRA}: our proposed approach described in Section~\ref{sec:methodology}. We tried two variations of our approach, the Convolutional Neural Networks (CNN) and Shared CNN. Their difference is that Shared CNN shares the weights by learning the question and code snippet embeddings, while CNN learns different weights for each one.
+    \item \emph{Embedding}: it is our baseline model. It is a simple architecture that applies a max-pooling layer to the word embeddings. 
+    \item \emph{Unif}: it is the solution proposed by \citet{cambronero-deep-code-search-2019}. They used two distinct layers for the question and code snippet embedding. They applied an average pooling layer to word embedding to learn the question embeddings. For the code snippet, they used an attention mechanism, which applies a weighted average to each word embedding, ''giving attention'' to the most relevant word of the code.
+\end{itemize}
+
+
+
+
+We evaluated the models on the StaQC dataset, a systematically mined question-code dataset from Stack Overflow \cite{yao-2018}. The main difference of StaQC to other datasets is that it is composed of ''how-to-do-it'' questions, as most of the answers to those types of questions are straight. StaQC contains SQL and Python questions, but, in our preliminary experiments, we used Python questions only. Table~\ref{table:summary-training-data-yao-staqc} shows a summary of the StaQC dataset.
 
 \begin{table}[h]
 \centering
@@ -332,23 +343,15 @@ $N_{3}$: Manually annotated code snippets & $2.169$ & $2.056$  \\
 \label{table:training-sample-division}
 \end{table}
 
-We trained our model on sample $N2$ (see Table~\ref{table:summary-training-data-yao-staqc} and Table~\ref{table:training-sample-division}), because 27\% of the questions contain more than one answer annotated, leading to more variance in our training dataset. The training and evaluation follow the \citet{iyer-etal-2016-summarizing} procedure, where the model is evaluated on a manually annotated dataset each epoch according to a Mean Reciprocal rank (MRR). The MRR tells if a model ranked the annotated answer in higher positions, i.e., higher values for MRR indicate the accepted answers were ranked in the top positions.
+All models were trained on sample $N2$ (see Table~\ref{table:summary-training-data-yao-staqc} and Table~\ref{table:training-sample-division}), because 27\% of the questions contain more than one answer annotated, leading to more variance in our training dataset. The training and evaluation follow the \citet{iyer-etal-2016-summarizing} procedure, where the model is evaluated on a manually annotated dataset each epoch according to a Mean Reciprocal rank (MRR). The MRR tells if a model ranked the annotated answer in higher positions, i.e., higher values for MRR indicate the accepted answers were ranked in the top positions.
 
 For the training phase, we split 70\% of $N2$ sample for training and 30\% for validation. We run the models for 500 epochs and stop early if the training loss ($J$) is less than $0.0001$ or the validation loss does not improve after 25 consecutive epochs. For the final evaluation, we choose the best model of the training phase according to MRR and run it for 20 iterations in the $N3$ sample (see Table~\ref{table:training-sample-division}). The final result is the average of the MRR for each pair $<q_{i}, c_{i}^{+}>$ of $N3$ and other 49 distractors $c_{j}$, which were selected randomly from the training sample, such that $c_{i}^{+} \neq c_{j}$.
 
-We provide the source code for our preliminary experiments in the following repository (omitted for peer review): \url{https://github.com/mrezende/concra}. The repository contains our proposed model, the baseline ones, training, and evaluation source code. We also provide the original and pre-processed dataset. The source code is written in Python, version 3.6.9, and we used the libraries Keras (version 2.2.4-tf) and TensorFlow (1.15.2). The tests were all conducted in the Colab platform\footnote{\url{https://colab.research.google.com/}}.
+We provide the source code for our preliminary experiments in the following repository: \url{https://github.com/mrezende/concra}. The repository contains our proposed model, the baseline ones, training, and evaluation source code. We also provide the original and pre-processed dataset. The source code is written in Python, version 3.6.9, and we used the libraries Keras (version 2.2.4-tf) and TensorFlow (1.15.2). The tests were all conducted in the Colab platform\footnote{\url{https://colab.research.google.com/}}.
 
 \subsection{Results}
 
-For the final evaluation, we compared the following models:
-
-\begin{itemize}
-    \item \emph{CoNCRA}: our proposed approach described in Section~\ref{sec:methodology}. We tried two variations of our approach, the Convolutional Neural Networks (CNN) and Shared CNN. Their difference is that Shared CNN shares the weights by learning the question and code snippet embeddings, while CNN learns different weights for each one.
-    \item \emph{Embedding}: it is our baseline model. It is a simple architecture that applies a max-pooling layer to the word embeddings. 
-    \item \emph{Unif}: it is the solution proposed by \citet{cambronero-deep-code-search-2019}. They used two distinct layers for the question and code snippet embedding. They applied an average pooling layer to word embedding to learn the question embeddings. For the code snippet, they used an attention mechanism, which applies a weighted average to each word embedding, ''giving attention'' to the most relevant word of the code.
-\end{itemize}
-
-All the models used the joint embedding technique described in Section~\ref{sec:joint-embedding}. Table~\ref{table:resultados} shows the final results after 20 runs on the $N3$ sample. Shared CNN with 4000 filters got the best results (lines D3 e F3). Our proposed architecture achieved an MRR score 5\% higher on average than the best result obtained by Unif (line B1), which can be considered an state-of-the-art approach. Our MRR result is 11\% higher than the baseline model (line A1). 
+ Table~\ref{table:resultados} compiles the final results after 20 runs on the $N3$ sample. Shared CNN with 4000 filters got the best results (row D3 and F3). Our proposed architecture achieved an MRR score 5\% higher on average than the best result obtained by Unif (row B1), which can be considered an state-of-the-art approach. Our MRR result is 11\% higher than the baseline model (row A1). 
 
 \begin{table*}[t]
 \centering
@@ -402,10 +405,10 @@ All the models used the joint embedding technique described in Section~\ref{sec:
 \label{table:resultados}
 \end{table*}
 
-As presented in Table~\ref{table:resultados}, an increase in the number of filters resulted in a better performance for CNN, as the model capacity and the number of extracted features grow (lines D3 e F3). 
+As presented in Table~\ref{table:resultados}, an increase in the number of filters resulted in a better performance for CNN, as the model capacity and the number of extracted features grow (row D3 and F3). 
 We tried different margin loss (see Section~\ref{sec:joint-embedding}). CNN got the best results with  $0.05$, while Unif and Embedding got better results with $0.2$ and $0.1$, respectively. 
 
-We verified that shared weights models (lines D e F) got better results than independently weights ones (lines C e E). One reason is that the optimizer of independent weights architecture has to learn the double of parameters, increasing the learning difficulty \cite{feng-2015}. We also tried a batch normalization technique to avoid overfitting and help our models to learn quickly and a more stable way, but only CNN and Shared CNN got better results. For Unif and Embedding, it did not improve the performance at all. 
+We verified that shared weights models (row D and F) got better results than independently weights ones (row C and E). One reason is that the optimizer of independent weights architecture has to learn the double of parameters, increasing the learning difficulty \cite{feng-2015}. We also tried a batch normalization technique to avoid overfitting and help our models to learn quickly and a more stable way, but only CNN and Shared CNN got better results. For Unif and Embedding, it did not improve the performance at all. 
 
 The Figure~\ref{fig:histogram-mrr} illustrates the MRR (Mean Reciprocal Rank), showing the first position of the annotated code snippet during the final evaluation.
 
@@ -425,11 +428,11 @@ We trained the models on the StaQC dataset, a systematically mined question code
 
 \section{Related Work}
 
-We summarized the difference between our work and related work in Table~\ref{table:summary-joint-embedding-related-work}. Most works differ on how they combine the words embeddings to obtain a sentence embedding. Recent works \cite{Sachdev-neural-code-search:2018, cambronero-deep-code-search-2019} (row (E) and (F)) used Skip-gram (see Section~\ref{sec:word-embedding}) and adopted simpler archictectures for sentence embedding than previous work \cite{Gu-deep-code-search:2018, Chen-bi-variational-autoencoder:2018} (row (C) and (D)).  
+We summarized the difference between our work and related work in Table~\ref{table:summary-joint-embedding-related-work}. Most works differ on how they combine the words embeddings to obtain a sentence embedding. Recent works (row E and F) used Skip-gram (see Section~\ref{sec:word-embedding}) and adopted simpler archictectures for sentence embedding than previous work (row C and D).  
 
-Previous work \cite{Gu-deep-code-search:2018, Sachdev-neural-code-search:2018, cambronero-deep-code-search-2019} (from row (D) to (F)) that used GitHub's data extracted the methods from the source code and matched them to docstring descriptions. Work that used Stack Overflow  \cite{Allamanis-bimodal-source-code-natural-language:2015, Chen-bi-variational-autoencoder:2018, iyer-etal-2016-summarizing} (from row (A) to (C)) paired question title to the code snippet of the accepted answer. For the search corpus, some works \cite{Gu-deep-code-search:2018, Sachdev-neural-code-search:2018, cambronero-deep-code-search-2019} (from row (D) to (F)) adopted a GitHub corpus with milions of pieces of code, while others \cite{Allamanis-bimodal-source-code-natural-language:2015, iyer-etal-2016-summarizing, Chen-bi-variational-autoencoder:2018} (from row (A) to (C)) retrieved code snippet from a small sample of 50 code snippets randomly selected. The studies (from row (A) to (G)) are commonly evaluated using questions collected from Stack Overflow. 
+Previous work (from row D to F) that used GitHub's data extracted the methods from the source code and matched them to docstring descriptions. Work that used Stack Overflow  (from row A to C) paired question title to the code snippet of the accepted answer. For the search corpus, some works (from row D to F) adopted a GitHub corpus with milions of pieces of code, while others  (from row A to C) retrieved code snippet from a small sample of 50 code snippets randomly selected. The studies (from row A to G) are commonly evaluated using questions collected from Stack Overflow. 
 
-Although, our architecture are more complex (require more parameters and time to train) than \cite{cambronero-deep-code-search-2019} (row F) architecture, we think it's not a overhead, as we can train our model offline. We matched question title to code snippets collected from Stack Overflow following \cite{Allamanis-bimodal-source-code-natural-language:2015} (row A and B) work. 
+Although, our architecture are more complex, require more parameters and time to train, than \citet{cambronero-deep-code-search-2019} (row F) architecture (SOTA), we think it's not a overhead, as we can train our model offline. We matched question title to code snippets collected from Stack Overflow following \citet{Allamanis-bimodal-source-code-natural-language:2015} and \citet{iyer-etal-2016-summarizing} (row A and B) work. 
 
 
 \begin{table}[t]
