@@ -168,7 +168,7 @@ SOFTWARE ENGINEERING (SBES 2020),
   \label{fig:concrete-examples}
 \end{figure}
 
-The advent of open source software and question answering websites contributed to improving the way developers produce code. Nowadays, code search permeates the development activities \citep{towards-summarizing-source-code-search:marin:2020}. Developers spend 15\% of their time searching for, for example, how a piece of code works, how to fix a bug, and how to use an API \cite{what-developers-search-for-on-the-web:xia:2017}. According to \citet{sadowski-how-developers-search-for-code-case-study:2015}, at Google, developers search for code 12 times a day, clicking on 2 to 3 results by average per search session. Therefore, improving how developers find code is paramount.  
+The advent of open source software and question answering websites contributed to improving the way developers produce code. Nowadays, code search permeates the development activities. Developers spend 15\% of their time searching for, for example, how a piece of code works, how to fix a bug, and how to use an API \cite{what-developers-search-for-on-the-web:xia:2017}. According to \citet{sadowski-how-developers-search-for-code-case-study:2015}, at Google, developers search for code 12 times a day, clicking on 2 to 3 results by average per search session. Therefore, improving how developers find code is paramount.  
 
 Most developers use general-purpose search engines (GPSE) to look for code (e.g., Google Search), which use page rank and other indexes tactics that are not optimized for searching code. Then, general-purpose search engines are not capable of finding code snippets unless they have accompanying descriptions. According to \citet{masudur-developers-use-google-code-retrieval:2018}, developers spend more time, visit more pages, and change queries more often when they are doing code-related searches.
 
@@ -266,7 +266,7 @@ The feature map (or activation map) contains the latent and most important featu
     \bm{o} = max\left(\left[\bm{c}_{1}, \bm{c}_{2}, . . ., \bm{c}_{|F|}\right], axis = 0\right)
 \end{equation}
 
-The max-pooling helps the convolutional neural networks to be translation invariant. Regardless of the word's position shift, the max-pooling selects the most relevant features and inserts it into the final vector \citep{tom-young:trends-deep-learning-nlp}. Figure~\ref{fig:cnn-steps-word-embedding} shows the results of each operation. We use the vector $\bm{o}$ as our sentence embedding, then $\bm{o}$ represents a question or a code snippet, in our case. 
+The max-pooling helps the convolutional neural networks to be translation invariant. Regardless of the word's position shift, the max-pooling selects the most relevant features and inserts it into the final vector. Figure~\ref{fig:cnn-steps-word-embedding} shows the results of each operation. We use the vector $\bm{o}$ as our sentence embedding, then $\bm{o}$ represents a question or a code snippet, in our case. 
 
 \begin{figure}[h]
     \centering
@@ -286,9 +286,7 @@ Given a question and code snippet set, $\mathbb{Q}$ and $\mathbb{C}$, our traini
 J = max(0, m - h_{\theta}(\bm{q}, \bm{c^{+}}) + h_{\theta}(\bm{q}, \bm{c^{-}}))
 \end{equation}
 
-$m$ is a margin and $h_{\theta}$ is a similarity function (e.g., \textit{cosine}). During the training phase, the goal is to minimize the cost function $J$. To obtain that, the model aims to satisfy the following condition: $h_{\theta}(\bm{q}, \bm{c^{+}}) - h_{\theta}(\bm{q}, \bm{c^{-}}) \geq m$. Then, the hinge loss function induces our model to score $c^{+}$ higher than $c^{-}$ for a given margin $m$. 
-
-For the similarity function $h_{\theta}$, we used \emph{cosine}, such that $h_{\theta}(\bm{q}, \bm{c}) = \{h_{\theta}(\bm{q}, \bm{c}) \in \mathbb{R} | 0 \leq h_{\theta}(\bm{q}, \bm{c}) \leq 1$\} computes the similarity between the vector $\bm{q} \in \mathbb{Q}$ and $\bm{c} \in \mathbb{C}$. $0$ indicates orthogonality e $1$ indicates greater similarity \cite{keras-cosine-similarity-2019}. Given that our objective function aims to satisfy the following condition: $h_{\theta}(\bm{q}, \bm{c^{+}}) \geq h_{\theta}(\bm{q}, \bm{c^{-}}) + m$, our model groupw $\bm{c^{+}}$ and $\bm{q}$ nearby, while the vectors $\bm{c^{-}}$ would be far away (see Figure~\ref{fig:joint-embedding}). 
+$m$ is a margin and $h_{\theta}$ is a similarity function (e.g., \textit{cosine}). During the training phase, the goal is to minimize the cost function $J$. To obtain that, the model aims to satisfy the following condition: $h_{\theta}(\bm{q}, \bm{c^{+}}) - h_{\theta}(\bm{q}, \bm{c^{-}}) \geq m$. Then, the hinge loss function induces our model to score $c^{+}$ higher than $c^{-}$ for a given margin $m$. For the similarity function $h_{\theta}$, we used \emph{cosine}. 
 
 \section{Experiments}
 
@@ -304,15 +302,39 @@ We evaluated the models on the StaQC dataset, a systematically mined question-co
 
 \begin{table}[h]
 \centering
+\begin{tabular}{ p{5cm} c c }
+\hline
+  & \multicolumn{2}{c}{\textbf{Question}}\\
+\hline
+\textbf{Code snippet} & \textbf{Python} & \textbf{SQL}  \\
+\hline
+
+$N_{1}$: Single code snippet in the answer description & $85.294$ & $75.637$ \\
+
+$N_{2}$: Automatically annotated code snippets & $60.083$ & $41.826$ \\
+
+$N_{3}$: Manually annotated code snippets & $2.169$ & $2.056$  \\
+
+ \hline
+ \textbf{Total} & $\bm{147.546}$ & $\bm{119.519}$\\
+ \hline 
+
+\end{tabular}
+\caption{Summary of StaQC dataset \cite{yao-2018}. Questions from $N2$ sample ("Automatically annotated code snippets") may contain more than one code snippet per answer description. Some code snippets may not be a solution to the question. So, the authors proposed a framework to annotate the code snippets automatically and it could achieve an F1 score of $0,916$ and an accuracy of $0,911$.}
+\label{table:summary-training-data-yao-staqc}
+\end{table}
+
+\begin{table}[h]
+\centering
 \begin{tabular}{ l r  }
  \hline
  \textbf{Sample} & \textbf{Quantity of pairs $<q_{i}, c_{i}^{+}>$}\\
  \hline
- $N_{1} = \text{Training}$ & $60.083$\\
+ $N_{2} = \text{Training}$ & $60.083$\\
  
- $N_{2} \supset \text{DEV}$ & $1.085$ \\
+ $N_{3} \supset \text{DEV}$ & $1.085$ \\
  
- $N_{2} \supset \text{EVAL}$ & $1.084$\\
+ $N_{3} \supset \text{EVAL}$ & $1.084$\\
  \hline
  \textbf{Total} & $\bm{62.252}$\\
  \hline
@@ -321,9 +343,9 @@ We evaluated the models on the StaQC dataset, a systematically mined question-co
 \label{table:training-sample-division}
 \end{table}
 
-All models were trained on sample $N1$ (see Table~\ref{table:training-sample-division}), because 27\% of the questions contain more than one answer annotated, leading to more variance in our training dataset. The training and evaluation follow the \citet{iyer-etal-2016-summarizing} procedure, where the model is evaluated on a manually annotated dataset each epoch according to a Mean Reciprocal rank (MRR). The MRR tells if a model ranked the annotated answer in higher positions, i.e., higher values for MRR indicate the accepted answers were ranked in the top positions.
+All models were trained on sample $N2$ (see Table~\ref{table:summary-training-data-yao-staqc} and Table~\ref{table:training-sample-division}), because 27\% of the questions contain more than one answer annotated, leading to more variance in our training dataset. The training and evaluation follow the \citet{iyer-etal-2016-summarizing} procedure, where the model is evaluated on a manually annotated dataset each epoch according to a Mean Reciprocal rank (MRR). The MRR tells if a model ranked the annotated answer in higher positions, i.e., higher values for MRR indicate the accepted answers were ranked in the top positions.
 
-For the training phase, we split 70\% of $N1$ sample for training and 30\% for validation. We run the models for 500 epochs and stop early if the training loss ($J$) is less than $0.0001$ or the validation loss does not improve after 25 consecutive epochs. For the final evaluation, we choose the best model of the training phase according to MRR and run it for 20 iterations in the $N2$ sample (see Table~\ref{table:training-sample-division}). The final result is the average of the MRR for each pair $<q_{i}, c_{i}^{+}>$ of $N2$ and other 49 distractors $c_{j}$, which were selected randomly from the training sample, such that $c_{i}^{+} \neq c_{j}$.
+For the training phase, we split 70\% of $N2$ sample for training and 30\% for validation. We run the models for 500 epochs and stop early if the training loss ($J$) is less than $0.0001$ or the validation loss does not improve after 25 consecutive epochs. For the final evaluation, we choose the best model of the training phase according to MRR and run it for 20 iterations in the $N3$ sample (see Table~\ref{table:training-sample-division}). The final result is the average of the MRR for each pair $<q_{i}, c_{i}^{+}>$ of $N3$ and other 49 distractors $c_{j}$, which were selected randomly from the training sample, such that $c_{i}^{+} \neq c_{j}$.
 
 We provide the source code for our preliminary experiments in the following repository: \url{https://github.com/mrezende/concra}. The repository contains our proposed model, the baseline ones, training, and evaluation source code. We also provide the original and pre-processed dataset. The source code is written in Python, version 3.6.9, and we used the libraries Keras (version 2.2.4-tf) and TensorFlow (1.15.2). The tests were all conducted in the Colab platform\footnote{\url{https://colab.research.google.com/}}.
 
