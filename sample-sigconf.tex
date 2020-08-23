@@ -161,6 +161,13 @@ SOFTWARE ENGINEERING (SBES 2020),
 
 \section{Introduction}
 
+\begin{figure}[h]
+  \includegraphics[width=0.45\textwidth]{figuras/concrete_examples.pdf}
+  \caption{Example of questions and answers our model (CoNCRA) gave. Our model answered correctly the first question (Q1), giving an answer (A 1.1) based on Numpy library, which adds support for multi-dimensional and large arrays in Python. The second answer (A 1.2) for the first question returns the last element of an array, it's incorrect, but it seems very interesting. The third one (A 1.3) shows the dimension of an array using numpy library, so it seems our model found a correlation between numpy and array operations. Another example (Q2), the first answer is incorrect, as it checks the presence of elements in a matrix, not array. Again, our model showed a numpy answer. The second one (A 2.2) is the correct and the third one (A 2.3) checks how many times an sequence repeats in a dataframe. }
+  \Description{None}
+  \label{fig:concrete-examples}
+\end{figure}
+
 The advent of open source software and question answering websites contributed to improving the way developers produce code. Nowadays, code search permeates the development activities \citep{towards-summarizing-source-code-search:marin:2020}. Developers spend 15\% of their time searching for, for example, how a piece of code works, how to fix a bug, and how to use an API \cite{what-developers-search-for-on-the-web:xia:2017}. According to \citet{sadowski-how-developers-search-for-code-case-study:2015}, at Google, developers search for code 12 times a day, clicking on 2 to 3 results by average per search session. Therefore, improving how developers find code is paramount.  
 
 Most developers use general-purpose search engines (GPSE) to look for code (e.g., Google Search), which use page rank and other indexes tactics that are not optimized for searching code. Then, general-purpose search engines are not capable of finding code snippets unless they have accompanying descriptions. According to \citet{masudur-developers-use-google-code-retrieval:2018}, developers spend more time, visit more pages, and change queries more often when they are doing code-related searches.
@@ -178,7 +185,6 @@ Additionally, we matched code to questions collected from Stack Overflow. For th
     \item How does it compare to the baseline and SOTA methods?
 \end{itemize}
 
-
 \section{Background}
 
 According to \citet{cambronero-deep-code-search-2019}, the main goal of code retrieval is \emph{to retrieve code snippets from a code corpus that most closely match a developer's intent, which is expressed in natural language.}
@@ -187,13 +193,12 @@ The first studies for code search used tools based on deductive-logic rules and 
 
 Neural networks showed good results at translation, question-answering, and classifications tasks in NLP by inferring words semantic and sentence context. Then, recent works adopted the neural networks approach for code search. These studies try to discriminate relevant code snippets from non-relevant ones based on the user's intent. In pursuance of that, code retrieval is reduced to a ranking problem, in which neural networks should be able to place code snippets that closely match the developer's intent in the top positions. The most common strategy to do that is \emph{joint embedding}. Joint embedding maps heterogeneous data into a common vector space, in which the distance between embedded input reflects the similarity between the underlying items \cite{li-joint-embedding-images-2015} (see Figure~\ref{fig:joint-embedding}).
 
-\begin{figure}[H]
+\begin{figure}[h]
   \includegraphics[width=0.45\textwidth]{figuras/joint_embedding-article.pdf}
   \caption{Illustration of \emph{joint embedding} technique for code retrieval. Two neural networks map a question and a code snippet into a common vector space. The distance between the vectors reflects the relevance of a code snippet to a question. Adapted from \cite{cambronero-deep-code-search-2019}.}
   \Description{None}
   \label{fig:joint-embedding}
 \end{figure}
-
 
 To apply joint embedding, 3 (three) items needs to be considered:
 
@@ -225,7 +230,7 @@ Word2vec has two strategies: continuous-bag-of-words (CBoW) and skip-gram. The m
 
 In our work, we opted for skip-gram as a semantic trait is preferable to a syntact one in our task. Semantic trait can help the neural networks to discriminate conditional clauses (e.g., \emph{if}, \emph{elsif}) and loop iteration (e.g. \emph{for}, \emph{while}), for example. Figure~\ref{fig:tsne-code-snippet-python} shows an application of word2vec in a Python related corpus. We can see the similarities between \emph{file}, \emph{write}, and \emph{open}, as \emph{set}, \emph{list}, and \emph{dict} based on the distance between them.
 
-\begin{figure}[H]
+\begin{figure}[h]
 \includegraphics[width=0.45\textwidth]{figuras/code_tsne.png}
 \caption{2D picture of continuous vectors of the 66 most frequent words from a Python corpus $V$. The illustration was generated by t-SNE, which allows 2D visualization from high-dimensional data. We applied word2vec with skip-gram and a parameter window $5$.}
 
@@ -263,7 +268,7 @@ The feature map (or activation map) contains the latent and most important featu
 
 The max-pooling helps the convolutional neural networks to be translation invariant. Regardless of the word's position shift, the max-pooling selects the most relevant features and inserts it into the final vector \citep{tom-young:trends-deep-learning-nlp}. Figure~\ref{fig:cnn-steps-word-embedding} shows the results of each operation. We use the vector $\bm{o}$ as our sentence embedding, then $\bm{o}$ represents a question or a code snippet, in our case. 
 
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.45\textwidth]{figuras/cnn-steps-word-embedding-article.pdf}
     \caption{Schematic drawing of our Convolutional Neural Networks (CNN) operations. Our example shows 4 filters $\bm{F} \in \mathbb{R}^{m X d X f}$ with window size $m = 2$. We slide each filter across the height of the input $\bm{x} \in \mathbb{R}^{n X d}$, where $n = 6$ and $d = 5$, and computes the dot product between the entries of the filter and the input \cite{karpathy-course-cnn-2016}. It returns a feature map $\bm{c}$. In the end, a max pooling layer resizes every feature map spatially, obtaining the final vector $\bm{o}$. We use the vector $\bm{o}$ as our question and code snippet embedding. Adapted from \cite{zhang-guide-convolutional-cnn-embedding-ilustration:2015}.}
@@ -295,34 +300,7 @@ In order to verify the efficacy of our approach and how it compares to a baselin
     \item \emph{Unif}: it is the solution proposed by \citet{cambronero-deep-code-search-2019}. They used two distinct layers for the question and code snippet embedding. They applied an average pooling layer to word embedding to learn the question embeddings. For the code snippet, they used an attention mechanism, which applies a weighted average to each word embedding, ''giving attention'' to the most relevant word of the code.
 \end{itemize}
 
-
-
-
-We evaluated the models on the StaQC dataset, a systematically mined question-code dataset from Stack Overflow \cite{yao-2018}. The main difference of StaQC to other datasets is that it is composed of ''how-to-do-it'' questions, as most of the answers to those types of questions are straight. StaQC contains SQL and Python questions, but, in our preliminary experiments, we used Python questions only. Table~\ref{table:summary-training-data-yao-staqc} shows a summary of the StaQC dataset.
-
-\begin{table}[h]
-\centering
-\begin{tabular}{ p{5cm} c c }
-\hline
-  & \multicolumn{2}{c}{\textbf{Question}}\\
-\hline
-\textbf{Code snippet} & \textbf{Python} & \textbf{SQL}  \\
-\hline
-
-$N_{1}$: Single code snippet in the answer description & $85.294$ & $75.637$ \\
-
-$N_{2}$: Automatically annotated code snippets & $60.083$ & $41.826$ \\
-
-$N_{3}$: Manually annotated code snippets & $2.169$ & $2.056$  \\
-
- \hline
- \textbf{Total} & $\bm{147.546}$ & $\bm{119.519}$\\
- \hline 
- 
-\end{tabular}
-\caption{Summary of StaQC dataset \cite{yao-2018}. Questions from $N2$ sample ("Automatically annotated code snippets") may contain more than one code snippet per answer description. Some code snippets may not be a solution to the question. So, the authors proposed a framework to annotate the code snippets automatically and it could achieve an F1 score of $0,916$ and an accuracy of $0,911$.}
-\label{table:summary-training-data-yao-staqc}
-\end{table}
+We evaluated the models on the StaQC dataset, a systematically mined question-code dataset from Stack Overflow \cite{yao-2018}. The main difference of StaQC to other datasets is that it is composed of ''how-to-do-it'' questions, as most of the answers to those types of questions are straight. StaQC contains SQL and Python questions, but, in our preliminary experiments, we used Python questions only. 
 
 \begin{table}[h]
 \centering
@@ -330,11 +308,11 @@ $N_{3}$: Manually annotated code snippets & $2.169$ & $2.056$  \\
  \hline
  \textbf{Sample} & \textbf{Quantity of pairs $<q_{i}, c_{i}^{+}>$}\\
  \hline
- $N_{2} = \text{Training}$ & $60.083$\\
+ $N_{1} = \text{Training}$ & $60.083$\\
  
- $N_{3} \supset \text{DEV}$ & $1.085$ \\
+ $N_{2} \supset \text{DEV}$ & $1.085$ \\
  
- $N_{3} \supset \text{EVAL}$ & $1.084$\\
+ $N_{2} \supset \text{EVAL}$ & $1.084$\\
  \hline
  \textbf{Total} & $\bm{62.252}$\\
  \hline
@@ -343,9 +321,9 @@ $N_{3}$: Manually annotated code snippets & $2.169$ & $2.056$  \\
 \label{table:training-sample-division}
 \end{table}
 
-All models were trained on sample $N2$ (see Table~\ref{table:summary-training-data-yao-staqc} and Table~\ref{table:training-sample-division}), because 27\% of the questions contain more than one answer annotated, leading to more variance in our training dataset. The training and evaluation follow the \citet{iyer-etal-2016-summarizing} procedure, where the model is evaluated on a manually annotated dataset each epoch according to a Mean Reciprocal rank (MRR). The MRR tells if a model ranked the annotated answer in higher positions, i.e., higher values for MRR indicate the accepted answers were ranked in the top positions.
+All models were trained on sample $N1$ (see Table~\ref{table:training-sample-division}), because 27\% of the questions contain more than one answer annotated, leading to more variance in our training dataset. The training and evaluation follow the \citet{iyer-etal-2016-summarizing} procedure, where the model is evaluated on a manually annotated dataset each epoch according to a Mean Reciprocal rank (MRR). The MRR tells if a model ranked the annotated answer in higher positions, i.e., higher values for MRR indicate the accepted answers were ranked in the top positions.
 
-For the training phase, we split 70\% of $N2$ sample for training and 30\% for validation. We run the models for 500 epochs and stop early if the training loss ($J$) is less than $0.0001$ or the validation loss does not improve after 25 consecutive epochs. For the final evaluation, we choose the best model of the training phase according to MRR and run it for 20 iterations in the $N3$ sample (see Table~\ref{table:training-sample-division}). The final result is the average of the MRR for each pair $<q_{i}, c_{i}^{+}>$ of $N3$ and other 49 distractors $c_{j}$, which were selected randomly from the training sample, such that $c_{i}^{+} \neq c_{j}$.
+For the training phase, we split 70\% of $N1$ sample for training and 30\% for validation. We run the models for 500 epochs and stop early if the training loss ($J$) is less than $0.0001$ or the validation loss does not improve after 25 consecutive epochs. For the final evaluation, we choose the best model of the training phase according to MRR and run it for 20 iterations in the $N2$ sample (see Table~\ref{table:training-sample-division}). The final result is the average of the MRR for each pair $<q_{i}, c_{i}^{+}>$ of $N2$ and other 49 distractors $c_{j}$, which were selected randomly from the training sample, such that $c_{i}^{+} \neq c_{j}$.
 
 We provide the source code for our preliminary experiments in the following repository: \url{https://github.com/mrezende/concra}. The repository contains our proposed model, the baseline ones, training, and evaluation source code. We also provide the original and pre-processed dataset. The source code is written in Python, version 3.6.9, and we used the libraries Keras (version 2.2.4-tf) and TensorFlow (1.15.2). The tests were all conducted in the Colab platform\footnote{\url{https://colab.research.google.com/}}.
 
@@ -412,13 +390,12 @@ We verified that shared weights models (row D and F) got better results than ind
 
 The Figure~\ref{fig:histogram-mrr} illustrates the MRR (Mean Reciprocal Rank), showing the first position of the annotated code snippet during the final evaluation.
 
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.45\textwidth]{figuras/histogram.pdf}
     \caption{Histogram of the firsts positions observed for the annotated code snippet during the final evaluation. The labels \emph{shared-cnn-with-bn}, \emph{unif} and \emph{embedding} refer to lines F3, A1 e B1, respectively, in the Table~\ref{table:resultados}.}
     \label{fig:histogram-mrr}
 \end{figure}
-
 
 Both CNN and Unif ranked the code snippets among the first three positions in 75\% of cases. We got a TOP-1 accuracy of 60\%, i.e., we ranked the relevant code snippet first place in 60\% of cases. Unif and Embedding got a TOP-1 accuracy of almost 50\%. However, one thing to note is that MRR considers only the annotated code snippet position. If the model shows up another code snippet, which correctly answers the question, our metric does not take it into account and the model is penalized. 
 
@@ -433,7 +410,6 @@ We summarized the difference between our work and related work in Table~\ref{tab
 Previous work (from row D to F) that used GitHub's data extracted the methods from the source code and matched them to docstring descriptions. Work that used Stack Overflow  (from row A to C) paired question title to the code snippet of the accepted answer. For the search corpus, some works (from row D to F) adopted a GitHub corpus with milions of pieces of code, while others  (from row A to C) retrieved code snippet from a small sample of 50 code snippets randomly selected. The studies (from row A to G) are commonly evaluated using questions collected from Stack Overflow. 
 
 Although, our architecture are more complex, require more parameters and time to train, than \citet{cambronero-deep-code-search-2019} (row F) architecture (SOTA), we think it's not a overhead, as we can train our model offline. We matched question title to code snippets collected from Stack Overflow following \citet{Allamanis-bimodal-source-code-natural-language:2015} and \citet{iyer-etal-2016-summarizing} (row A and B) work. 
-
 
 \begin{table}[t]
 \centering
@@ -460,8 +436,6 @@ G & \textit{Our work} & \textit{Token} & \textit{Skip-gram} & \textit{CNN}   \\
 \caption{Summary of related joint embedding work. The column \emph{Feature} refers to question and code representation. Different approachs for a question and code snippet are separated by slash (''/''), showing the question method first followed by the code snippet technique. Adapted from \cite{yan-benchmark-code-search-information-retrieval-deep-learning:2020}.}
 \label{table:summary-joint-embedding-related-work}
 \end{table}
-
-
 
 \section{Conclusion}
 
